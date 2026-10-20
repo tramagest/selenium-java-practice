@@ -1,6 +1,6 @@
 package pageObjects.guerrilamaill;
 
-
+import common.Constant.Constant;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,10 +13,11 @@ public class EmailPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private final By aliasCheckbox = By.id("use-alias");
 
 
-    private final By emailWidget =
-            By.xpath("//*[@id='email-widget']");
+    private final By emailWidget = By.id("email-widget");
+
 
     public EmailPage(WebDriver driver) {
         this.driver = driver;
@@ -25,8 +26,19 @@ public class EmailPage {
         );
     }
 
+
+
+    public void setUseAlias(boolean useAlias) {
+        WebElement checkbox = wait.until(
+                ExpectedConditions.elementToBeClickable(aliasCheckbox)
+        );
+
+        if (checkbox.isSelected() != useAlias) {
+            checkbox.click();
+        }
+    }
     public void openInbox() {
-        driver.get("https://www.guerrillamail.com/inbox");
+        driver.get(Constant.GUERILLAMAIL_URL);
     }
 
     public String getEmailAddress() {

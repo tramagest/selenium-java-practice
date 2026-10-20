@@ -21,11 +21,12 @@ public class BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    // Scroll
+
     protected void click(By locator) {
-        WebElement element = find(locator);
+        WebElement element = new WebDriverWait(Constant.WEBDRIVER, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(locator));
         ((JavascriptExecutor) Constant.WEBDRIVER)
-                .executeScript("arguments[0].scrollIntoView(true);", element);
+                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
         element.click();
     }
 

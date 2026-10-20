@@ -3,6 +3,10 @@ package pageObjects.Railway;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+import common.Constant.Constant;
 
 public class BookTicketPage extends BasePage {
 
@@ -24,6 +28,30 @@ public class BookTicketPage extends BasePage {
     private final By btnBookTicket =
             By.xpath("//input[@type='submit']");
 
+    private final By ttlsuccessBookTicket =
+            By.xpath("//h1");
+
+    private static final String TICKET_INFO_XPATH =
+            "//table[contains(@class,'MyTable')]//tr[td]"
+                    + "/td[count(ancestor::table//th[normalize-space()='%s']/preceding-sibling::th)+1]";
+
+    public String getTicketInfo(String columnName) {
+        return find(By.xpath(String.format(TICKET_INFO_XPATH, columnName))).getText().trim();
+    }
+
+
+
+
+
+    public String getSuccessBookTicketMessage() {
+        new WebDriverWait(Constant.WEBDRIVER, Duration.ofSeconds(10))
+                .until(ExpectedConditions.textToBe(
+                        ttlsuccessBookTicket,
+                        "Ticket booked successfully!"
+                ));
+
+        return find(ttlsuccessBookTicket).getText().trim();
+    }
 
     public void selectDate(String date) {
         Select select = new Select(find(ddlDate));
@@ -46,9 +74,9 @@ public class BookTicketPage extends BasePage {
         select.selectByVisibleText(seatType);
     }
 
-    public void selectTicketAmount(String amount) {
+    public void selectTicketAmount(Integer amount) {
         Select select = new Select(find(ddlTicketAmount));
-        select.selectByVisibleText(amount);
+        select.selectByVisibleText(String.valueOf(amount));
     }
 
     public void bookTicket(
@@ -56,7 +84,7 @@ public class BookTicketPage extends BasePage {
             String departStation,
             String arriveStation,
             String seatType,
-            String amount) {
+            Integer amount) {
 
         if (date != null) {
             selectDate(date);
@@ -75,4 +103,6 @@ public class BookTicketPage extends BasePage {
         }
         click(btnBookTicket);
     }
+
+
 }

@@ -3,9 +3,11 @@ package Exercise2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
+import common.Constant.Constant;
 
-public class FirstSeleniumTest {
-    private static final String URL = "https://www.selenium.dev/documentation/";
+
+public class FirstSeleniumTest  {
+
     private static final String EXPECTED_TITLE = "The Selenium Browser Automation Project | Selenium";
 
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class FirstSeleniumTest {
 
     private static void verifyTitle(WebDriver driver, String browserName) {
         driver.manage().window().maximize();
-        driver.get(URL);
+        driver.get(Constant.DOCUMENT_URL);
 
         String actual = driver.getTitle();
 

@@ -1,70 +1,40 @@
 
 package Exercise3;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pageObjects.Railway.BasePage;
 import pageObjects.Railway.RegisterPage;
 import pageObjects.Railway.LoginPage;
 import pageObjects.Railway.BookTicketPage;
 import common.Constant.Constant;
+import testcases.BaseTest;
+import pageObjects.guerrilamaill.EmailPage;
+import org.testng.annotations.Test;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
+public class Exercise3 extends BaseTest {
 
-public class Exercise3 {
+    @Test
+    public void Exercise3() {
 
-    public static void main(String[] args) {
 
-        WebDriver driver = new ChromeDriver();
         Constant.WEBDRIVER = driver;
+        driver.get(Constant.RAILWAY_URL);
 
-        WebDriverWait wait = new WebDriverWait(
-                driver, Duration.ofSeconds(15)
-        );
-
-
-            // Step 1: Open Guerrilla Mail in the first tab
-        driver.get("https://www.guerrillamail.com/inbox");
+        // 1.Open Guerrilla Mail in the first tab
+        EmailPage emailPage = new EmailPage(driver);
+        emailPage.openInbox();
 
         String mailTab = driver.getWindowHandle();
 
-            // Step 2: Ensure Use Alias is unchecked
-        By aliasCheckbox = By.xpath("//*[@id='use-alias']");
+        // 2.Ensure Use Alias is unchecked
+        emailPage.setUseAlias(false);
 
-        WebElement checkbox = wait.until(
-                    ExpectedConditions.elementToBeClickable(aliasCheckbox)
-            );
-
-        if (checkbox.isSelected()) {
-                checkbox.click();
-            }
-
-            // Step 3: Get the temporary email
-        By emailLocator = By.xpath("//*[@id='email-widget']");
-
-        WebElement emailElement = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(emailLocator)
-            );
-
-        String email = emailElement.getAttribute("value");
-
-        if (email == null || email.isBlank()) {
-                email = emailElement.getText();
-            }
-
-
-
-        email = email.trim();
+        // 3.Get the temporary email
+        String email = emailPage.getEmailAddress();
         System.out.println("Temporary email: " + email);
 
+        // 4.Open Railway in a new tab
         driver.switchTo().newWindow(org.openqa.selenium.WindowType.TAB);
-        driver.get("http://saferailway.somee.com/");
+        driver.get(Constant.RAILWAY_URL);
 
         String railwayTab = driver.getWindowHandle();
 
@@ -72,11 +42,8 @@ public class Exercise3 {
         RegisterPage registerPage = basePage.gotoRegisterPage();
 
 
-        String password = "123456789";
-        String pid = "123456789";
 
-
-        registerPage.register(email, password, pid);
+        registerPage.register(email, Constant.PASSWORD, Constant.PID);
 
         System.out.println("Registration form submitted: " + email);
 
@@ -86,7 +53,7 @@ public class Exercise3 {
         BookTicketPage bookTicketPage = basePage.gotoBookTicketPage();
 
         try{
-        bookTicketPage.bookTicket(null, null, "Phan Thiết", null, "2");
+        bookTicketPage.bookTicket(null, null, "Phan Thiết", null, 2);
         System.out.println("PASS: Ticket booked successfully.");}
         catch (Exception e){
             System.out.println("Error booking ticket: " + e.getMessage());
