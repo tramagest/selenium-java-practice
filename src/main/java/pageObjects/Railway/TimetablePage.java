@@ -1,9 +1,13 @@
 package pageObjects.Railway;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
 
 public class TimetablePage extends BasePage{
 
+    public TimetablePage(WebDriver driver) {
+        super(driver);
+    }
 
 
     private static final String COL_DEPART = "Depart Station";
@@ -45,7 +49,7 @@ public class TimetablePage extends BasePage{
 
     public BookTicketPage clickBookTicket(String departStation, String arriveStation) {
         click(linkLocator(departStation, arriveStation, COL_BOOK_TICKET));
-        return new BookTicketPage();
+        return new BookTicketPage(driver);
     }
 
     private static final String BOOK_TICKET_BY_SEAT_XPATH =

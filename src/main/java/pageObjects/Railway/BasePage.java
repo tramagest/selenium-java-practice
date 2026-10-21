@@ -6,28 +6,51 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
 
+
 public class BasePage {
 
+    protected WebDriver driver;
+
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
+    }
     private static final String TAB_XPATH = "//*[@id='menu']//li[a[span[text()='%s']]]/a";
 
     private final By lblWelcome = By.xpath("//*[@id='banner']/div/strong");
 
+
+
+
     // Wait for 10s
     protected WebElement find(By locator) {
-        return new WebDriverWait(Constant.WEBDRIVER, Duration.ofSeconds(10))
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
 
+
+
+
+
     protected void click(By locator) {
-        WebElement element = new WebDriverWait(Constant.WEBDRIVER, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(locator));
-        ((JavascriptExecutor) Constant.WEBDRIVER)
-                .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
-        element.click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(locator)
+        );
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                element
+        );
+
+        wait.until(
+                ExpectedConditions.elementToBeClickable(locator)
+        ).click();
     }
 
     // ClickTab
@@ -36,30 +59,57 @@ public class BasePage {
         click(tab);
     }
 
+    public void logout() {
+        clickTab("Log out");
+    }
 
+
+    public boolean isLoggedOut() {
+        return driver.findElements(By.xpath("//*[@id='menu']//li[a[span[text()='Log out']]]/a")).isEmpty();
+    }
+
+
+    public FAQPage gotoFAQPage() {
+        clickTab("FAQ");
+        return new FAQPage(driver);
+    }
 
     public LoginPage gotoLoginPage() {
         clickTab("Login");
-        return new LoginPage();
+        return new LoginPage(driver);
     }
 
     public TimetablePage gotoTimetablePage() {
         clickTab("Timetable");
-        return new TimetablePage();
+        return new TimetablePage(driver);
     }
 
     public BookTicketPage gotoBookTicketPage() {
         clickTab("Book ticket");
-        return new BookTicketPage();
+        return new BookTicketPage(driver);
     }
 
     public MyTicketPage gotoMyTicketPage() {
         clickTab("My ticket");
-        return new MyTicketPage();
+        return new MyTicketPage(driver);
     }
     public RegisterPage gotoRegisterPage(){
         clickTab("Register" );
-        return new RegisterPage();
+        return new RegisterPage(driver);
+    }
+
+
+    public String getWelcomeMessage() {
+        return find(lblWelcome).getText();
+    }
+
+    public boolean isWelcomeMessageDisplayed() {
+        return driver.findElement(lblWelcome).isDisplayed();
+    }
+
+    public boolean verifyWelcomeMessage(String expectedMessage) {
+        String actualMessage = getWelcomeMessage();
+        return actualMessage.equals(expectedMessage);
     }
 
 }

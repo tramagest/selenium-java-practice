@@ -9,6 +9,7 @@ import common.Constant.Constant;
 import testcases.BaseTest;
 import pageObjects.guerrilamaill.EmailPage;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 public class Exercise3 extends BaseTest {
 
@@ -16,7 +17,7 @@ public class Exercise3 extends BaseTest {
     public void Exercise3() {
 
 
-        Constant.WEBDRIVER = driver;
+
         driver.get(Constant.RAILWAY_URL);
 
         // 1.Open Guerrilla Mail in the first tab
@@ -38,12 +39,12 @@ public class Exercise3 extends BaseTest {
 
         String railwayTab = driver.getWindowHandle();
 
-        BasePage basePage = new BasePage();
+        BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = basePage.gotoRegisterPage();
 
 
 
-        registerPage.register(email, Constant.PASSWORD, Constant.PID);
+        registerPage.register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
 
         System.out.println("Registration form submitted: " + email);
 
@@ -51,15 +52,12 @@ public class Exercise3 extends BaseTest {
         loginPage.login(Constant.USERNAME, Constant.PASSWORD);
 
         BookTicketPage bookTicketPage = basePage.gotoBookTicketPage();
-
-        try{
         bookTicketPage.bookTicket(null, null, "Phan Thiết", null, 2);
-        System.out.println("PASS: Ticket booked successfully.");}
-        catch (Exception e){
-            System.out.println("Error booking ticket: " + e.getMessage());
-        }
 
-        driver.quit();
+        Assert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(), "Ticket booked successfully!");
+
+        Assert.assertEquals(bookTicketPage.getArriveStation(), "Phan Thiết");
+        Assert.assertEquals(bookTicketPage.getAmount(), "2");
 
 
     }

@@ -6,9 +6,15 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import org.openqa.selenium.WebDriver;
+
 import common.Constant.Constant;
 
 public class BookTicketPage extends BasePage {
+
+    public BookTicketPage(WebDriver driver) {
+        super(driver);
+    }
 
     private final By ddlArriveStation =
             By.xpath("//select[@name='ArriveStation']");
@@ -39,12 +45,29 @@ public class BookTicketPage extends BasePage {
         return find(By.xpath(String.format(TICKET_INFO_XPATH, columnName))).getText().trim();
     }
 
+    public String getDepartStation() {
+        return getTicketInfo("Depart Station");
+    }
 
+    public String getArriveStation() {
+        return getTicketInfo("Arrive Station");
+    }
 
+    public String getSeatType() {
+        return getTicketInfo("Seat Type");
+    }
+
+    public String getDepartDate() {
+        return getTicketInfo("Depart Date");
+    }
+
+    public String getAmount() {
+        return getTicketInfo("Amount");
+    }
 
 
     public String getSuccessBookTicketMessage() {
-        new WebDriverWait(Constant.WEBDRIVER, Duration.ofSeconds(10))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.textToBe(
                         ttlsuccessBookTicket,
                         "Ticket booked successfully!"
@@ -52,6 +75,7 @@ public class BookTicketPage extends BasePage {
 
         return find(ttlsuccessBookTicket).getText().trim();
     }
+
 
     public void selectDate(String date) {
         Select select = new Select(find(ddlDate));
@@ -106,3 +130,4 @@ public class BookTicketPage extends BasePage {
 
 
 }
+
