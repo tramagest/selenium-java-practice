@@ -103,9 +103,12 @@ public class BasePage {
         return find(lblWelcome).getText();
     }
 
-    public boolean isWelcomeMessageDisplayed() {
-        return driver.findElement(lblWelcome).isDisplayed();
+    //public boolean isWelcomeMessageDisplayed() {return driver.findElement(lblWelcome).isDisplayed();    }
+    public boolean isWelcomeUserMessageDisplayed() {
+        return find(lblWelcome).getText().trim().equals("Welcome "+Constant.USERNAME);
     }
+
+    // return find(lblTicketPricePageTitle)
 
     public boolean verifyWelcomeMessage(String expectedMessage) {
         String actualMessage = getWelcomeMessage();

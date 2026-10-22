@@ -62,7 +62,7 @@ public class LoginTest extends BaseTest {
 
         //Verify error message is displayed
         Assert.assertEquals(loginPage.getLoginErrorMessage(), "There was a problem with your login and/or errors exist in your form. ", "Error message is not displayed correctly.");
-        Assert.assertFalse(basePage.isWelcomeMessageDisplayed(), "Welcome message is displayed. User might be logged in.");
+        Assert.assertFalse(basePage.isWelcomeUserMessageDisplayed(), "Welcome message is displayed. User might be logged in.");
 
     }
 

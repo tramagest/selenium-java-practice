@@ -8,6 +8,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 
+import org.openqa.selenium.WebElement;
+
 import common.Constant.Constant;
 
 public class BookTicketPage extends BasePage {
@@ -43,6 +45,18 @@ public class BookTicketPage extends BasePage {
 
     public String getTicketInfo(String columnName) {
         return find(By.xpath(String.format(TICKET_INFO_XPATH, columnName))).getText().trim();
+    }
+
+    public String getSelectedDepartStation() {
+        return new Select(find(ddlDepartStation)).getFirstSelectedOption().getText().trim();
+    }
+
+    public String getSelectedArriveStation() {
+        return new Select(find(ddlArriveStation)).getFirstSelectedOption().getText().trim();
+    }
+
+    public String getSelectedSeatType() {
+        return new Select(find(ddlSeatType)).getFirstSelectedOption().getText().trim();
     }
 
     public String getDepartStation() {
@@ -114,7 +128,10 @@ public class BookTicketPage extends BasePage {
             selectDate(date);
         }
         if (departStation != null) {
+            WebElement oldOption = find(ddlArriveStation).findElement(By.tagName("option"));
             selectDepartStation(departStation);
+            new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(ExpectedConditions.stalenessOf(oldOption));
         }
         if (arriveStation != null) {
             selectArriveStation(arriveStation);

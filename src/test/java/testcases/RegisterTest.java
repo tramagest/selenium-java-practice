@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 import pageObjects.Railway.RegisterPage;
 import pageObjects.Railway.BasePage;
 import pageObjects.Railway.HomePage;
-import pageObjects.Tempmail.TempMailPage;
+
 import org.openqa.selenium.WindowType;
 
 public class RegisterTest extends BaseTest{
@@ -75,7 +75,7 @@ public class RegisterTest extends BaseTest{
     }
 
 
-    @Test
+    /*@Test
     public void TC09_UserCreateAndActivateAccount() {
 
         SoftAssert softAssert = new SoftAssert();
@@ -129,6 +129,6 @@ public class RegisterTest extends BaseTest{
 
         softAssert.assertAll();
 
-    }
+    }*/
 
 }

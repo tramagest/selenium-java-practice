@@ -16,7 +16,7 @@ public class HomePage extends BasePage {
     private final By linkCreateAccount = By.xpath("//*[@id=\"content\"]/div/a");
 
     public boolean isHomePageTitleDisplayed() {
-        return find(homePageTitle).isDisplayed();
+        return find(homePageTitle ).getText().trim().equals("Welcome to Safe Railway");
     }
 
     public void clickCreateAccountLink() {
