@@ -130,7 +130,7 @@ public class LoginTest extends BaseTest {
         //Precondition: Create a new account but don't activate it.
 
         EmailPage emailPage = new EmailPage(driver);
-        emailPage.openInbox();
+        driver.get(Constant.GUERILLAMAIL_URL);
 
         emailPage.setUseAlias(false);
 

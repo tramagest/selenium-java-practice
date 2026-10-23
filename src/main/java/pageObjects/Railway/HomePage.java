@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 
 
 public class HomePage extends BasePage {
+
     public HomePage(WebDriver driver) {
         super(driver);
     }
@@ -12,7 +13,7 @@ public class HomePage extends BasePage {
 
     private final By homePageTitle = By.xpath("//*[@id='content']/h1");
 
-    //private final By linkCreateAccount = By.xpath("//*[@id=\"content\"]/div/a");
+
     private final By linkCreateAccount = By.xpath("//*[@id=\"content\"]/div/a");
 
     public boolean isHomePageTitleDisplayed() {
@@ -22,5 +23,9 @@ public class HomePage extends BasePage {
     public void clickCreateAccountLink() {
 
         click(linkCreateAccount);
+    }
+
+    public boolean isCreateAccountLinkDisplayed() {
+        return find(linkCreateAccount).getText().trim().equals("create an account");
     }
 }

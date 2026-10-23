@@ -4,12 +4,17 @@ package pageObjects.Railway;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import java.time.Duration;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class RegisterPage extends BasePage {
 
     public RegisterPage(WebDriver driver) {
         super(driver);
     }
+
+    private final By registerPageTitle = By.xpath("//*[@id='content']/h1");
 
     private  final By formRegister = By.id("RegisterForm");
 
@@ -21,15 +26,11 @@ public class RegisterPage extends BasePage {
 
     private final By txtPID = By.id("pid");
 
-    private final By btnSubmit =
-            By.xpath("//input[@type='submit']");
+    private final By messageConfirmRegister = By.id("content");
 
-
-    private final By registerSuccessMessage = By.xpath("//*[@id='content']/p");
-
+    private final By btnSubmit =  By.xpath("//input[@type='submit']");
 
     private final By registerErrorMessage = By.xpath("//*[@id='content']/p[2]");
-
 
     private final By registerErrorPasswordMessage = By.xpath("//label[@for='password' and @class='validation-error']");
 
@@ -64,6 +65,25 @@ public class RegisterPage extends BasePage {
         int formY = form.getLocation().getY();
 
         return errorY + errorHeight <= formY;
+    }
+
+
+    public boolean isregisterPageTitleDisplayed() {
+        return find(registerPageTitle).getText().trim().equals("Create account");
+    }
+
+    public String getRegisterSuccessTitle() {
+        return new WebDriverWait(driver, Duration.ofSeconds(15))
+                .ignoring(StaleElementReferenceException.class)
+                .until(d -> {
+                    String text = d.findElement(registerPageTitle).getText().trim();
+                    return text.contains("Thank you") ? text : null;
+                });
+    }
+
+    public String getmessageConfirmRegister(){
+
+        return find(messageConfirmRegister).getText();
     }
 
 

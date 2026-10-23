@@ -16,13 +16,11 @@ public class Exercise3 extends BaseTest {
     @Test
     public void Exercise3() {
 
-
-
         driver.get(Constant.RAILWAY_URL);
 
         // 1.Open Guerrilla Mail in the first tab
         EmailPage emailPage = new EmailPage(driver);
-        emailPage.openInbox();
+        driver.get(Constant.GUERILLAMAIL_URL);
 
         String mailTab = driver.getWindowHandle();
 

@@ -14,6 +14,7 @@ public class TimetablePage extends BasePage{
     private static final String COL_ARRIVE = "Arrive Station";
     private static final String COL_CHECK_PRICE = "Check Price";
     private static final String COL_BOOK_TICKET = "Book ticket";
+    private static final String BOOK_TICKET_BY_SEAT_XPATH = "//tr[td[normalize-space()='%s']]//a[normalize-space()='Book ticket']";
 
 
     private String colIndex(String headerName) {
@@ -52,8 +53,7 @@ public class TimetablePage extends BasePage{
         return new BookTicketPage(driver);
     }
 
-    private static final String BOOK_TICKET_BY_SEAT_XPATH =
-            "//tr[td[normalize-space()='%s']]//a[normalize-space()='Book ticket']";
+
 
     private By bookTicketBySeatLocator(String seatType) {
         return By.xpath(String.format(BOOK_TICKET_BY_SEAT_XPATH, seatType));

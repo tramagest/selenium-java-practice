@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BasePage {
+
     public LoginPage(WebDriver driver) {
         super(driver);
     }
@@ -14,10 +15,7 @@ public class LoginPage extends BasePage {
 
     private final By loginErrorMessage = By.xpath("//*[@id='content']/p");
 
-    public String getLoginErrorMessage() {
-        return find(loginErrorMessage).getText();
-    }
-
+    private final By linkForgotPassword = By.xpath("//a[normalize-space()='Forgot Password page']");
 
     private final By btnSubmit =
             By.xpath("//input[@type='submit']");
@@ -26,5 +24,13 @@ public class LoginPage extends BasePage {
         find(txtUsername).sendKeys(email);
         find(txtPassword).sendKeys(password);
         click(btnSubmit);
+    }
+
+    public void clickForgotPasswordLink() {
+        click(linkForgotPassword);
+    }
+
+    public String getLoginErrorMessage() {
+        return find(loginErrorMessage).getText();
     }
 }

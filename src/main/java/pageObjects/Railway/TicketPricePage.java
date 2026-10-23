@@ -27,9 +27,7 @@ public class TicketPricePage extends BasePage {
     private final By btnCancelAll =
             By.xpath("//table[contains(@class,'MyTable')]//input[@value='Cancel']");
 
-    public String getTicketPricePageTitle() {
-        return find(lblTicketPricePageTitle).getText().trim();
-    }
+
 
     public String getTicketPriceTableTitle() {
         return find(lblTicketPriceTableTitle).getText().trim();

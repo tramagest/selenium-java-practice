@@ -8,14 +8,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class MyTicketPage extends BasePage {
+
     public MyTicketPage(WebDriver driver) {
         super(driver);
     }
 
-
-
-    private final By btnCancelAll =
-            By.xpath("//table[contains(@class,'MyTable')]//input[@value='Cancel']");
+    private final By btnCancelAll =  By.xpath("//table[contains(@class,'MyTable')]//input[@value='Cancel']");
 
     public String getLatestTicketId() {
         find(btnCancelAll);
@@ -45,4 +43,4 @@ public class MyTicketPage extends BasePage {
         return driver.findElements(cancelButtonOf(ticketId)).isEmpty();
     }
 
-}
+    }
