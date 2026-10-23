@@ -7,8 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
-
 import java.time.Duration;
+import java.util.Set;
 
 
 public class BasePage {
@@ -31,11 +31,6 @@ public class BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-
-
-
-
-
     protected void click(By locator) {
         WebElement element = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(locator));
@@ -48,6 +43,22 @@ public class BasePage {
         By tab = By.xpath(String.format(TAB_XPATH, tabName));
         click(tab);
     }
+
+    protected void switchToNewTab(Set<String> oldTabs) {
+        new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(ExpectedConditions.numberOfWindowsToBe(oldTabs.size() + 1));
+
+        for (String tab : driver.getWindowHandles()) {
+            if (!oldTabs.contains(tab)) {
+                driver.switchTo().window(tab);
+                return;
+            }
+        }
+    }
+
+
+
+
 
     public void logout() {
         clickTab("Log out");
@@ -88,17 +99,13 @@ public class BasePage {
         return new RegisterPage(driver);
     }
 
-
     public String getWelcomeMessage() {
         return find(lblWelcome).getText();
     }
 
-    //public boolean isWelcomeMessageDisplayed() {return driver.findElement(lblWelcome).isDisplayed();    }
     public boolean isWelcomeUserMessageDisplayed() {
         return find(lblWelcome).getText().trim().equals("Welcome "+Constant.USERNAME);
     }
-
-    // return find(lblTicketPricePageTitle)
 
     public boolean verifyWelcomeMessage(String expectedMessage) {
         String actualMessage = getWelcomeMessage();

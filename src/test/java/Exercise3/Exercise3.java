@@ -1,61 +1,61 @@
 
 package Exercise3;
 
-import pageObjects.Railway.BasePage;
-import pageObjects.Railway.RegisterPage;
-import pageObjects.Railway.LoginPage;
-import pageObjects.Railway.BookTicketPage;
+import pageObjects.Railway.*;
 import common.Constant.Constant;
 import testcases.BaseTest;
-import pageObjects.guerrilamaill.EmailPage;
 import org.testng.annotations.Test;
-import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 
 public class Exercise3 extends BaseTest {
 
     @Test
     public void Exercise3() {
 
-        driver.get(Constant.RAILWAY_URL);
+        SoftAssert softAssert = new SoftAssert();
 
-        // 1.Open Guerrilla Mail in the first tab
-        EmailPage emailPage = new EmailPage(driver);
-        driver.get(Constant.GUERILLAMAIL_URL);
-
-        String mailTab = driver.getWindowHandle();
-
-        // 2.Ensure Use Alias is unchecked
-        emailPage.setUseAlias(false);
-
-        // 3.Get the temporary email
-        String email = emailPage.getEmailAddress();
-        System.out.println("Temporary email: " + email);
-
-        // 4.Open Railway in a new tab
-        driver.switchTo().newWindow(org.openqa.selenium.WindowType.TAB);
-        driver.get(Constant.RAILWAY_URL);
-
-        String railwayTab = driver.getWindowHandle();
+        String arriveStation = "Phan Thiết";
+        Integer amount = 2;
 
         BasePage basePage = new BasePage(driver);
-        RegisterPage registerPage = basePage.gotoRegisterPage();
+        RegisterPage registerPage = new RegisterPage(driver);
 
+        //create new account
 
+        String email= registerPage.createActivatedAccount();
 
-        registerPage.register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
+        //Navigate to railway http://saferailway.somee.com/
 
-        System.out.println("Registration form submitted: " + email);
+        driver.get(Constant.RAILWAY_URL);
+
+        basePage.gotoLoginPage();
 
         LoginPage loginPage = basePage.gotoLoginPage();
-        loginPage.login(Constant.USERNAME, Constant.PASSWORD);
+        loginPage.login(email, Constant.PASSWORD);
+
+        //Go to “Book ticket”, book 2 tickets to PhanThiet
 
         BookTicketPage bookTicketPage = basePage.gotoBookTicketPage();
-        bookTicketPage.bookTicket(null, null, "Phan Thiết", null, 2);
+        bookTicketPage.bookTicket(null, null, arriveStation, null, amount);
 
-        Assert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(), "Ticket booked successfully!");
+        //Verify success bookticket message
 
-        Assert.assertEquals(bookTicketPage.getArriveStation(), "Phan Thiết");
-        Assert.assertEquals(bookTicketPage.getAmount(), "2");
+        softAssert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(), "Ticket booked successfully!");
+
+        //Verify info ticket
+
+        softAssert.assertEquals(bookTicketPage.getArriveStation(), "Phan Thiết");
+        softAssert.assertEquals(bookTicketPage.getAmount(), "2");
+
+        //Cleanup data
+
+        MyTicketPage myTicketPage = basePage.gotoMyTicketPage();
+        basePage.gotoMyTicketPage();
+
+        myTicketPage.cancelTicket(null, null, arriveStation, null, amount);
+
+
+        softAssert.assertAll();
 
 
     }

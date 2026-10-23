@@ -1,21 +1,16 @@
 package testcases;
 
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
+
 import org.testng.asserts.SoftAssert;
-
-
 import common.Constant.Constant;
 import org.testng.annotations.Test;
 import pageObjects.Railway.BookTicketPage;
-import pageObjects.Railway.RegisterPage;
 import pageObjects.Railway.BasePage;
-import pageObjects.Railway.HomePage;
 import pageObjects.Railway.MyTicketPage;
 import pageObjects.Railway.LoginPage;
 
-import org.openqa.selenium.WindowType;
 
-public class MyTicketTest extends BaseTest {
+public class CancelTicketTest extends BaseTest {
     @Test
     public void TC16_UserCanCancelATicket() {
 
@@ -25,6 +20,7 @@ public class MyTicketTest extends BaseTest {
         String arriveStation = "Sài Gòn";
         String seatType = "Soft seat with air conditioner";
         Integer amount = 1;
+        String date = null;
 
         //1. Navigate to QA Railway Website
         driver.get(Constant.RAILWAY_URL);
@@ -41,7 +37,7 @@ public class MyTicketTest extends BaseTest {
 
         basePage.gotoBookTicketPage();
         BookTicketPage bookTicketPage = new BookTicketPage(driver);
-        bookTicketPage.bookTicket(null, departStation, arriveStation, seatType, amount);
+        bookTicketPage.bookTicket(date, departStation, arriveStation, seatType, amount);
 
         //4. Click on "My ticket" tab
 
@@ -51,11 +47,10 @@ public class MyTicketTest extends BaseTest {
         //6. Click on "OK" button on Confirmation message "Are you sure?"
 
         MyTicketPage myTicketPage = new MyTicketPage(driver);
-        String ticketId = myTicketPage.getLatestTicketId();
+        String ticketId = myTicketPage.cancelTicket(departStation, arriveStation, seatType, date, amount);
 
-        myTicketPage.cancelTicketById(ticketId);
-        softAssert.assertTrue(myTicketPage.isTicketCanceled(ticketId), "Ticket was not canceled.");
-
+        softAssert.assertNotNull(ticketId, "No ticket found to cancel.");
+        softAssert.assertFalse(myTicketPage.isTicketDisplayed(ticketId), "Ticket was not canceled.");
 
 
         softAssert.assertAll();

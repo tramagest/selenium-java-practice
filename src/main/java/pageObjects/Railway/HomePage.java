@@ -10,7 +10,6 @@ public class HomePage extends BasePage {
         super(driver);
     }
 
-
     private final By homePageTitle = By.xpath("//*[@id='content']/h1");
 
 

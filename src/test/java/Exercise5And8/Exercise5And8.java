@@ -3,18 +3,19 @@ package Exercise5And8;
 import common.Constant.Constant;
 
 import pageObjects.Railway.BasePage;
+import pageObjects.Railway.MyTicketPage;
 import pageObjects.Railway.TimetablePage;
 import pageObjects.Railway.BookTicketPage;
-
 import common.Utilities.DateUtils;
-import org.testng.Assert;
-
+import org.testng.asserts.SoftAssert;
 import org.testng.annotations.Test;
 import testcases.BaseTest;
 
 public class Exercise5And8 extends BaseTest {
     @Test
     public void Exercise5And8() {
+
+        SoftAssert softAssert = new SoftAssert();
 
         String departStation = "Sài Gòn";
         String arriveStation = "Đà Nẵng";
@@ -59,13 +60,22 @@ public class Exercise5And8 extends BaseTest {
 
 
         // Verify
-        Assert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
+        softAssert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
 
-        Assert.assertEquals(bookTicketPage.getDepartStation(), departStation);
-        Assert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
-        Assert.assertEquals(bookTicketPage.getSeatType(), seatType);
-        Assert.assertEquals(bookTicketPage.getDepartDate(), date);
-        Assert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+        softAssert.assertEquals(bookTicketPage.getDepartStation(), departStation);
+        softAssert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
+        softAssert.assertEquals(bookTicketPage.getSeatType(), seatType);
+        softAssert.assertEquals(bookTicketPage.getDepartDate(), date);
+        softAssert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+
+        //Cleanup data
+
+        basePage.gotoMyTicketPage();
+
+        MyTicketPage  myTicketPage = basePage.gotoMyTicketPage();
+        myTicketPage.cancelTicket(departStation, arriveStation, date, seatType, amount);
+
+        softAssert.assertAll();
 
 
     }

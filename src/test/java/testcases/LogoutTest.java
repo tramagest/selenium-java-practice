@@ -1,8 +1,6 @@
 package testcases;
 
 import org.testng.asserts.SoftAssert;
-
-
 import common.Constant.Constant;
 import org.testng.annotations.Test;
 import pageObjects.Railway.LoginPage;

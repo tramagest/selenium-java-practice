@@ -2,6 +2,10 @@ package pageObjects.Railway;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import java.time.Duration;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class ForgotPasswordPage extends BasePage {
@@ -56,16 +60,19 @@ public class ForgotPasswordPage extends BasePage {
         return !driver.findElements(messageResetPasswordError).isEmpty();
     }
 
+    public String getMessageResetPasswordError() {
+        try {
+            return new WebDriverWait(driver, Duration.ofSeconds(5))
+                    .until(ExpectedConditions.visibilityOfElementLocated(messageResetPasswordError))
+                    .getText();
+        } catch (TimeoutException e) {
+            return "";
+        }
+    }
+
     public String getMessageConfirmPasswordError()
     {
         return find(messageConfirmPasswordError).getText();
     }
-
-
-    public String getMessageResetPasswordError()
-    {
-        return find(messageResetPasswordError).getText();
-    }
-
 
 }

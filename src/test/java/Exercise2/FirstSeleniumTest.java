@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import common.Constant.Constant;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 
 public class FirstSeleniumTest  {
@@ -16,6 +17,8 @@ public class FirstSeleniumTest  {
 
 
         verifyTitle(new EdgeDriver(), "Edge");
+
+        verifyTitle(new FirefoxDriver(), "Firefox");
     }
 
     private static void verifyTitle(WebDriver driver, String browserName) {

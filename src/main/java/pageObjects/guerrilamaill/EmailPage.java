@@ -9,8 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import pageObjects.Railway.BasePage;
 import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.NoSuchWindowException;
 
 public class EmailPage  extends BasePage {
 
@@ -32,13 +31,11 @@ public class EmailPage  extends BasePage {
     private final By linkResetPassword = By.xpath("//div[@class='email_body']//a[contains(@href,'PasswordReset')]");
 
 
-
     public String getEmailResetToken() {
         String emailBody = find(txtResetToken).getText();
 
         return emailBody.split("The token is:")[1].split("\\. Visit")[0].trim();
     }
-
 
     public void clickLinkResetPassword() {
         click(linkResetPassword);
@@ -67,8 +64,6 @@ public class EmailPage  extends BasePage {
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", link);
     }
-
-
 
     public void setUseAlias(boolean useAlias) {
         WebElement checkbox = wait.until(
@@ -100,8 +95,22 @@ public class EmailPage  extends BasePage {
 
         return email.trim();
     }
+    public String openMailbox() {
+        driver.get(Constant.GUERILLAMAIL_URL);
+        setUseAlias(false);
+        return getEmailAddress();
+    }
 
+    public void switchToMailTab() {
+        for (String tab : driver.getWindowHandles()) {
+            driver.switchTo().window(tab);
+            if (driver.getCurrentUrl().contains(Constant.MAIL_DOMAIN)) {
+                return;
+            }
+        }
+        throw new NoSuchWindowException("Mail tab not found");
 
+    }
 
     public void closeAdIfPresent() {
         ((JavascriptExecutor) driver).executeScript(

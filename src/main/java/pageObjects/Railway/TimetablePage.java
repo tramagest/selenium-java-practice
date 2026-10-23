@@ -54,7 +54,6 @@ public class TimetablePage extends BasePage{
     }
 
 
-
     private By bookTicketBySeatLocator(String seatType) {
         return By.xpath(String.format(BOOK_TICKET_BY_SEAT_XPATH, seatType));
     }

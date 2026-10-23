@@ -1,16 +1,11 @@
 package testcases;
 
 import common.Utilities.DateUtils;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-
-import common.Utilities.DateUtils;
 import common.Constant.Constant;
 import org.testng.annotations.Test;
 import pageObjects.Railway.*;
-
-import org.openqa.selenium.WindowType;
 import pageObjects.Railway.BookTicketPage;
 import pageObjects.Railway.TimetablePage;
 import pageObjects.Railway.TicketPricePage;
@@ -19,6 +14,7 @@ public class BookTicketTest extends BaseTest {
     @Test
     public void TC12_UserCanCook1TicketAtATime() {
 
+        SoftAssert softAssert = new SoftAssert();
 
         String departStation = "Nha Trang";
         String arriveStation = "Huế";
@@ -26,7 +22,7 @@ public class BookTicketTest extends BaseTest {
         Integer amount = 1;
 
 
-        SoftAssert softAssert = new SoftAssert();
+
 
         //1. Navigate to QA Railway Website
 
@@ -64,16 +60,23 @@ public class BookTicketTest extends BaseTest {
 
 
         // Verify
-        Assert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
+        softAssert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
 
-        Assert.assertEquals(bookTicketPage.getDepartStation(), departStation);
-        Assert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
-        Assert.assertEquals(bookTicketPage.getSeatType(), seatType);
-        Assert.assertEquals(bookTicketPage.getDepartDate(), date);
-        Assert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+        softAssert.assertEquals(bookTicketPage.getDepartStation(), departStation);
+        softAssert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
+        softAssert.assertEquals(bookTicketPage.getSeatType(), seatType);
+        softAssert.assertEquals(bookTicketPage.getDepartDate(), date);
+        softAssert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+
+        MyTicketPage myTicketPage = new MyTicketPage(driver);
+        basePage.gotoMyTicketPage();
+
+        myTicketPage.cancelTicket(departStation, arriveStation, seatType, date, amount);
 
 
         softAssert.assertAll();
+
+
 
     }
 
@@ -81,16 +84,16 @@ public class BookTicketTest extends BaseTest {
     @Test
     public void TC13_UserCanBookManyTicketsAtATime() {
 
+        SoftAssert softAssert = new SoftAssert();
+
         String departStation = "Nha Trang";
         String arriveStation = "Sài Gòn";
         String seatType = "Soft seat with air conditioner";
         Integer amount = 5;
 
-        SoftAssert softAssert = new SoftAssert();
-
         //1. Navigate to QA Railway Website
-        driver.get(Constant.RAILWAY_URL);
 
+        driver.get(Constant.RAILWAY_URL);
 
         //2. Login with a valid account
 
@@ -98,7 +101,6 @@ public class BookTicketTest extends BaseTest {
         basePage.gotoLoginPage();
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(Constant.USERNAME, Constant.PASSWORD);
-
 
         //3. Click on "Book ticket" tab
 
@@ -117,24 +119,28 @@ public class BookTicketTest extends BaseTest {
         bookTicketPage.bookTicket(date, departStation, arriveStation, seatType, amount);
 
 
-        //Verify
+        //Verify: Message "Ticket booked successfully!" displays
 
         String actualMessage = bookTicketPage.getSuccessBookTicketMessage();
         String expectedMessage = "Ticket booked successfully!";
 
-
-        // Verify
         Assert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
 
-        Assert.assertEquals(bookTicketPage.getDepartStation(), departStation);
-        Assert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
-        Assert.assertEquals(bookTicketPage.getSeatType(), seatType);
-        Assert.assertEquals(bookTicketPage.getDepartDate(), date);
-        Assert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
 
+        // Verify: Ticket information display correctly (Depart Date,  Depart Station,  Arrive Station,  Seat Type,  Amount)
+
+        softAssert.assertEquals(bookTicketPage.getDepartStation(), departStation);
+        softAssert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
+        softAssert.assertEquals(bookTicketPage.getSeatType(), seatType);
+        softAssert.assertEquals(bookTicketPage.getDepartDate(), date);
+        softAssert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+
+        MyTicketPage myTicketPage = new MyTicketPage(driver);
+        basePage.gotoMyTicketPage();
+
+        myTicketPage.cancelTicket(departStation, arriveStation, seatType, date, amount);
 
         softAssert.assertAll();
-
 
     }
 
@@ -146,23 +152,26 @@ public class BookTicketTest extends BaseTest {
         SoftAssert softAssert = new SoftAssert();
 
         //1. Navigate to QA Railway Website
+
         driver.get(Constant.RAILWAY_URL);
 
         //2. Login with a valid account
+
         BasePage basePage = new BasePage(driver);
         basePage.gotoLoginPage();
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(Constant.USERNAME, Constant.PASSWORD);
 
         //3. Click on "Timetable" tab
+
         basePage.gotoTimetablePage();
 
         //4. Click on "check price" link of the route from "Đà Nẵng" to "Sài Gòn"
+
         TimetablePage timetablePage = new TimetablePage(driver);
         timetablePage.clickCheckPrice("Đà Nẵng", "Sài Gòn");
 
-        //Verify
-        //"Ticket Price" page is loaded.
+        //Verify: "Ticket Price" page is loaded.
 
         TicketPricePage ticketPricePage = new TicketPricePage(driver);
 
@@ -175,13 +184,13 @@ public class BookTicketTest extends BaseTest {
 
         //Price for each seat displays correctly
         //HS = 310000, SS = 335000, SSC = 360000, HB = 410000, SB = 460000, SBC = 510000
+
         softAssert.assertEquals(ticketPricePage.getPrice("HS"), "310000", "HS price is incorrect.");
         softAssert.assertEquals(ticketPricePage.getPrice("SS"), "335000", "SS price is incorrect.");
         softAssert.assertEquals(ticketPricePage.getPrice("SSC"), "360000", "SSC price is incorrect.");
         softAssert.assertEquals(ticketPricePage.getPrice("HB"), "410000", "HB price is incorrect.");
         softAssert.assertEquals(ticketPricePage.getPrice("SB"), "460000", "SB price is incorrect.");
         softAssert.assertEquals(ticketPricePage.getPrice("SBC"), "510000", "SBC price is incorrect.");
-
 
         softAssert.assertAll();
 
@@ -191,17 +200,15 @@ public class BookTicketTest extends BaseTest {
     @Test
 
     public void TC15_UserCanBookTicketFromTimetable(){
+
         SoftAssert softAssert = new SoftAssert();
 
         String departStation = "Quảng Ngãi";
         String arriveStation = "Huế";
-        Integer amount = 5;
-
-
+        Integer amount = 2;
 
         //1. Navigate to QA Railway Website
         driver.get(Constant.RAILWAY_URL);
-
 
         //2. Login with a valid account
 
@@ -209,7 +216,6 @@ public class BookTicketTest extends BaseTest {
         basePage.gotoLoginPage();
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login(Constant.USERNAME, Constant.PASSWORD);
-
 
         //3. Click on "Timetable" tab
 
@@ -227,8 +233,6 @@ public class BookTicketTest extends BaseTest {
         softAssert.assertEquals(bookTicketPage.getSelectedDepartStation(), departStation, "Depart station is not displayed correctly.");
         softAssert.assertEquals(bookTicketPage.getSelectedArriveStation(), arriveStation, "Arrive station is not displayed correctly.");
 
-
-
         //5. Select Depart date next 10 days
         //6. Select Ticket amount = 5
         //7. Click on "Book ticket" button
@@ -243,25 +247,28 @@ public class BookTicketTest extends BaseTest {
         //Verify: Message "Ticket booked successfully!" displays.
         //Ticket information display correctly (Depart Date,  Depart Station,  Arrive Station,  Seat Type,  Amount)
 
-
         String actualMessage = bookTicketPage.getSuccessBookTicketMessage();
         String expectedMessage = "Ticket booked successfully!";
 
-        Assert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
+        softAssert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
 
-        Assert.assertEquals(bookTicketPage.getDepartStation(), departStation);
-        Assert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
-        Assert.assertEquals(bookTicketPage.getSeatType(), seatType);
-        Assert.assertEquals(bookTicketPage.getDepartDate(), date);
-        Assert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
+        softAssert.assertEquals(bookTicketPage.getDepartStation(), departStation);
+        softAssert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
+        softAssert.assertEquals(bookTicketPage.getSeatType(), seatType);
+        softAssert.assertEquals(bookTicketPage.getDepartDate(), date);
+        softAssert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
 
+        //Cleanup data
 
+        MyTicketPage myTicketPage = new MyTicketPage(driver);
+        basePage.gotoMyTicketPage();
 
+        myTicketPage.cancelTicket(departStation, arriveStation, seatType, date, amount);
 
         softAssert.assertAll();
 
-    }
 
 
+        }
 
 }

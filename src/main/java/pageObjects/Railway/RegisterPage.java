@@ -1,12 +1,15 @@
 
 package pageObjects.Railway;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import common.Constant.Constant;
+import org.openqa.selenium.*;
+
 import java.time.Duration;
-import org.openqa.selenium.StaleElementReferenceException;
+import java.util.Set;
+
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageObjects.guerrilamaill.EmailPage;
 
 public class RegisterPage extends BasePage {
 
@@ -84,6 +87,26 @@ public class RegisterPage extends BasePage {
     public String getmessageConfirmRegister(){
 
         return find(messageConfirmRegister).getText();
+    }
+
+    public String createActivatedAccount() {
+        EmailPage emailPage = new EmailPage(driver);
+        String email = emailPage.openMailbox();
+
+        driver.switchTo().newWindow(WindowType.TAB);
+        driver.get(Constant.RAILWAY_URL);
+        new HomePage(driver).clickCreateAccountLink();
+
+        register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
+
+        emailPage.switchToMailTab();
+        emailPage.clickMessageConfirm();
+
+        Set<String> oldTabs = driver.getWindowHandles();
+        emailPage.clickLinkConfirmMail();
+        switchToNewTab(oldTabs);
+
+        return email;
     }
 
 

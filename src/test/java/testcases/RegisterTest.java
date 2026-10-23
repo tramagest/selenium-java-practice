@@ -1,8 +1,6 @@
 package testcases;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
+
 import org.testng.asserts.SoftAssert;
-
-
 import common.Constant.Constant;
 import org.testng.annotations.Test;
 import pageObjects.Railway.RegisterPage;
@@ -12,15 +10,15 @@ import java.util.Set;
 import java.time.Duration;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import org.openqa.selenium.WindowType;
 import pageObjects.guerrilamaill.EmailPage;
 
 public class RegisterTest extends BaseTest{
     @Test
-    public void TC07_UsercannotCreateAccountWithAnAlreadyInUseEmail(){
+    public void TC07_UserCannotCreateAccountWithAnAlreadyInUseEmail(){
 
         SoftAssert softAssert = new SoftAssert();
+
         //1. Navigate to QA Railway Website
 
         driver.get(Constant.RAILWAY_URL);
@@ -42,8 +40,6 @@ public class RegisterTest extends BaseTest{
         softAssert.assertEquals(registerPage.getRegisterErrorMessage(), "This email address is already in use.", "Error message is not displayed as expected when trying to register with an already in use email.");
         softAssert.assertTrue( registerPage.isErrorMessageAboveForm(),"Error message is not above the registration form.");
 
-
-
         softAssert.assertAll();
 
     }
@@ -53,6 +49,7 @@ public class RegisterTest extends BaseTest{
     public void TC08_UserCannotCreateAccountWithEmptyFields(){
 
         SoftAssert softAssert = new SoftAssert();
+
         //1. Navigate to QA Railway Website
 
         driver.get(Constant.RAILWAY_URL);
@@ -68,7 +65,6 @@ public class RegisterTest extends BaseTest{
         RegisterPage registerPage = new RegisterPage(driver);
         registerPage.register(Constant.USERNAME, "", "", "");
 
-
         //Verify
 
         softAssert.assertEquals(registerPage.getRegisterErrorMessage(), "There're errors in the form. Please correct the errors and try again.", "Error message is not displayed as expected when trying to register with empty fields.");
@@ -76,30 +72,29 @@ public class RegisterTest extends BaseTest{
         softAssert.assertEquals(registerPage.getRegisterErrorPasswordMessage(), "Invalid password length.", "Password error message is not displayed as expected.");
         softAssert.assertEquals(registerPage.getRegisterErrorPIDMessage(), "Invalid ID length.", "PID error message is not displayed as expected.");
 
-
     }
 
-
     @Test
+
     public void TC09_UserCreateAndActivateAccount() {
         
         SoftAssert softAssert = new  SoftAssert();
 
         // Open Guerrilla Mail in the first tab
+
         EmailPage emailPage = new EmailPage(driver);
         driver.get(Constant.GUERILLAMAIL_URL);
 
         String mailTab = driver.getWindowHandle();
 
         // Ensure Use Alias is unchecked
+
         emailPage.setUseAlias(false);
 
         // Get the temporary email
+
         String email = emailPage.getEmailAddress();
         System.out.println("Temporary email: " + email);
-
-
-
 
         //1. Navigate to QA Railway Website
 
@@ -116,16 +111,14 @@ public class RegisterTest extends BaseTest{
 
         homePage.clickCreateAccountLink();
 
-
         RegisterPage registerPage = new RegisterPage(driver);
 
         //Verify Register page is shown
-        softAssert.assertTrue(registerPage.isregisterPageTitleDisplayed(), "RegisterPage is not displayed as  expected.");
 
+        softAssert.assertTrue(registerPage.isregisterPageTitleDisplayed(), "RegisterPage is not displayed as  expected.");
 
         //3. Enter valid information into all fields
         //4. Click on "Register" button
-
 
         registerPage.register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
 
@@ -135,6 +128,7 @@ public class RegisterTest extends BaseTest{
 
         //5. Get email information (webmail address, mailbox and password) and navigate to that webmail
         //6. Login to the mailbox
+
         driver.switchTo().window(mailTab);
 
         //7. Open email with subject containing "Please confirm your account"  and the email of the new account at step 3
@@ -142,11 +136,13 @@ public class RegisterTest extends BaseTest{
         emailPage.clickMessageConfirm();
 
         // 8. Click on the activate link
+
         Set<String> oldTabs = driver.getWindowHandles();
 
         emailPage.clickLinkConfirmMail();
 
         // 9. Switch to the new Railway tab
+
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         wait.until(ExpectedConditions.numberOfWindowsToBe(oldTabs.size() + 1));
@@ -159,6 +155,7 @@ public class RegisterTest extends BaseTest{
         }
 
         // 10. Verify registration confirmation message
+
         String expectedConfirmMessage ="Registration Confirmed! You can now log in to the site";
 
         String actualConfirmMessage = registerPage.getmessageConfirmRegister();

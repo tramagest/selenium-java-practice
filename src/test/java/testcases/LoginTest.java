@@ -3,8 +3,6 @@ package testcases;
 import org.openqa.selenium.WindowType;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-
-
 import common.Constant.Constant;
 import org.testng.annotations.Test;
 import pageObjects.Railway.LoginPage;
@@ -115,9 +113,11 @@ public class LoginTest extends BaseTest {
 
         for (int i = 0; i < 3; i++) {
             loginPage.login(Constant.USERNAME, "invalidpassword");
-            //Verify error message is displayed
-            softAssert.assertEquals(loginPage.getLoginErrorMessage(), "You have used 4 out of 5 login attempts. After all 5 have been used, you will be unable to login for 15 minutes.");
+
         }
+
+        //Verify error message is displayed
+        softAssert.assertEquals(loginPage.getLoginErrorMessage(), "You have used 4 out of 5 login attempts. After all 5 have been used, you will be unable to login for 15 minutes.");
 
         softAssert.assertAll();
 
