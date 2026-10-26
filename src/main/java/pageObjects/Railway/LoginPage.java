@@ -33,4 +33,16 @@ public class LoginPage extends BasePage {
     public String getLoginErrorMessage() {
         return find(loginErrorMessage).getText();
     }
+
+    public boolean verifyLoginErrorMessage(String expectedMessage) {
+        return find(loginErrorMessage).getText().equals(expectedMessage);
+    }
+
+    public void loginWithManyTimes (Integer n, String username, String password) {
+
+        for (int i = 0; i < (n - 1); i++) {
+            login(username, password);
+        }
+
+    }
 }

@@ -19,25 +19,19 @@ public class RegisterTest extends BaseTest{
 
         SoftAssert softAssert = new SoftAssert();
 
-        //1. Navigate to QA Railway Website
-
-        driver.get(Constant.RAILWAY_URL);
-
-
-        //2. Click on "Register" tab
-
         BasePage basePage = new BasePage(driver);
+        RegisterPage registerPage = new RegisterPage(driver);
+
+        basePage.navigatetoRailway();
+
         basePage.gotoRegisterPage();
 
-        //3. Enter information of the created account in Pre-condition
-        //4. Click on "Register" button
-
-        RegisterPage registerPage = new RegisterPage(driver);
         registerPage.register(Constant.USERNAME, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
 
         //Verify: Error message "This email address is already in use." displays above the form.
 
-        softAssert.assertEquals(registerPage.getRegisterErrorMessage(), "This email address is already in use.", "Error message is not displayed as expected when trying to register with an already in use email.");
+        softAssert.assertTrue(registerPage.verifyRegisterErrorMessage("This email address is already in use."));
+
         softAssert.assertTrue( registerPage.isErrorMessageAboveForm(),"Error message is not above the registration form.");
 
         softAssert.assertAll();
@@ -50,28 +44,19 @@ public class RegisterTest extends BaseTest{
 
         SoftAssert softAssert = new SoftAssert();
 
-        //1. Navigate to QA Railway Website
-
-        driver.get(Constant.RAILWAY_URL);
-
-        //2. Click on "Register" tab
-
         BasePage basePage = new BasePage(driver);
+        RegisterPage registerPage = new RegisterPage(driver);
+
+        basePage.navigatetoRailway();
+
         basePage.gotoRegisterPage();
 
-        //3. Enter valid email address and leave other fields empty
-        //4. Click on "Register" button
-
-        RegisterPage registerPage = new RegisterPage(driver);
         registerPage.register(Constant.USERNAME, "", "", "");
 
-        //Verify
-
-        softAssert.assertEquals(registerPage.getRegisterErrorMessage(), "There're errors in the form. Please correct the errors and try again.", "Error message is not displayed as expected when trying to register with empty fields.");
         softAssert.assertTrue( registerPage.isErrorMessageAboveForm(),"Error message is not above the registration form.");
-        softAssert.assertEquals(registerPage.getRegisterErrorPasswordMessage(), "Invalid password length.", "Password error message is not displayed as expected.");
-        softAssert.assertEquals(registerPage.getRegisterErrorPIDMessage(), "Invalid ID length.", "PID error message is not displayed as expected.");
-
+        softAssert.assertTrue(registerPage.verifyRegisterErrorMessage("There're errors in the form. Please correct the errors and try again."));
+        softAssert.assertTrue(registerPage.verifyRegisterErrorPasswordMessage("Invalid password length."));
+        softAssert.assertTrue(registerPage.verifyRegisterErrorPIDMessage("Invalid ID length."));
     }
 
     @Test
@@ -80,88 +65,43 @@ public class RegisterTest extends BaseTest{
         
         SoftAssert softAssert = new  SoftAssert();
 
-        // Open Guerrilla Mail in the first tab
-
         EmailPage emailPage = new EmailPage(driver);
-        driver.get(Constant.GUERILLAMAIL_URL);
+        HomePage homePage = new HomePage(driver);
+        BasePage basePage = new BasePage(driver);
+        RegisterPage registerPage = new RegisterPage(driver);
+
+
+        basePage.navigatetoGuerrilamail();
 
         String mailTab = driver.getWindowHandle();
 
-        // Ensure Use Alias is unchecked
-
         emailPage.setUseAlias(false);
 
-        // Get the temporary email
-
         String email = emailPage.getEmailAddress();
-        System.out.println("Temporary email: " + email);
-
-        //1. Navigate to QA Railway Website
 
         driver.switchTo().newWindow(WindowType.TAB);
-        driver.get(Constant.RAILWAY_URL);
 
-        //2. Click on "Create an account"
-
-        HomePage homePage = new HomePage(driver);
-
-        //Verify Home page is shown with guide containing href "create an account" to "Register" page
+        basePage.navigatetoRailway();
 
         softAssert.assertTrue(homePage.isCreateAccountLinkDisplayed(), "Create account link is not displayed as  expected.");
 
         homePage.clickCreateAccountLink();
 
-        RegisterPage registerPage = new RegisterPage(driver);
-
-        //Verify Register page is shown
-
         softAssert.assertTrue(registerPage.isregisterPageTitleDisplayed(), "RegisterPage is not displayed as  expected.");
-
-        //3. Enter valid information into all fields
-        //4. Click on "Register" button
 
         registerPage.register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
 
-        //Verify message thank you
-
         softAssert.assertEquals(registerPage.getRegisterSuccessTitle(), "Thank you for registering your account");
-
-        //5. Get email information (webmail address, mailbox and password) and navigate to that webmail
-        //6. Login to the mailbox
 
         driver.switchTo().window(mailTab);
 
-        //7. Open email with subject containing "Please confirm your account"  and the email of the new account at step 3
-
         emailPage.clickMessageConfirm();
-
-        // 8. Click on the activate link
-
-        Set<String> oldTabs = driver.getWindowHandles();
 
         emailPage.clickLinkConfirmMail();
 
-        // 9. Switch to the new Railway tab
+        // Verify registration confirmation message
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-
-        wait.until(ExpectedConditions.numberOfWindowsToBe(oldTabs.size() + 1));
-
-        for (String tab : driver.getWindowHandles()) {
-            if (!oldTabs.contains(tab)) {
-                driver.switchTo().window(tab);
-                break;
-            }
-        }
-
-        // 10. Verify registration confirmation message
-
-        String expectedConfirmMessage ="Registration Confirmed! You can now log in to the site";
-
-        String actualConfirmMessage = registerPage.getmessageConfirmRegister();
-
-        softAssert.assertEquals(actualConfirmMessage,expectedConfirmMessage,
-                "Registration confirmation message is not displayed as expected.");
+        softAssert.assertTrue(registerPage.verifymessageConfirmRegister("Registration Confirmed! You can now log in to the site"));
 
         softAssert.assertAll();
 

@@ -112,4 +112,12 @@ public class BasePage {
         return actualMessage.equals(expectedMessage);
     }
 
+    public void navigatetoRailway(){
+        driver.get(Constant.RAILWAY_URL);
+    }
+
+    public void navigatetoGuerrilamail(){
+        driver.get(Constant.GUERILLAMAIL_URL);
+    }
+
 }

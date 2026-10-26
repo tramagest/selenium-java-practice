@@ -6,6 +6,7 @@ import common.Constant.Constant;
 import testcases.BaseTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+import dataObjects.Ticket;
 
 public class Exercise3 extends BaseTest {
 
@@ -14,46 +15,31 @@ public class Exercise3 extends BaseTest {
 
         SoftAssert softAssert = new SoftAssert();
 
-        String arriveStation = "Phan Thiết";
-        Integer amount = 2;
+        ticket = new Ticket(null, "Phan Thiết", null, 2, null);
 
         BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = new RegisterPage(driver);
 
-        //create new account
 
         String email= registerPage.createActivatedAccount();
 
-        //Navigate to railway http://saferailway.somee.com/
-
-        driver.get(Constant.RAILWAY_URL);
+        basePage.navigatetoRailway();
 
         basePage.gotoLoginPage();
 
         LoginPage loginPage = basePage.gotoLoginPage();
+
         loginPage.login(email, Constant.PASSWORD);
 
-        //Go to “Book ticket”, book 2 tickets to PhanThiet
-
         BookTicketPage bookTicketPage = basePage.gotoBookTicketPage();
-        bookTicketPage.bookTicket(null, null, arriveStation, null, amount);
 
-        //Verify success bookticket message
+        bookTicketPage.bookTicket(ticket);
 
-        softAssert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(), "Ticket booked successfully!");
 
-        //Verify info ticket
+        softAssert.assertTrue(bookTicketPage.verifySuccessBookTicketMessage("Ticket booked successfully!"));
 
-        softAssert.assertEquals(bookTicketPage.getArriveStation(), "Phan Thiết");
-        softAssert.assertEquals(bookTicketPage.getAmount(), "2");
 
-        //Cleanup data
-
-        MyTicketPage myTicketPage = basePage.gotoMyTicketPage();
-        basePage.gotoMyTicketPage();
-
-        myTicketPage.cancelTicket(null, null, arriveStation, null, amount);
-
+        softAssert.assertTrue(bookTicketPage.verifyBookedTicket(null, ticket.getArriveStation(), null, ticket.getAmount(), null));
 
         softAssert.assertAll();
 

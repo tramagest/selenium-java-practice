@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Comparator;
+import dataObjects.Ticket;
+
 
 public class MyTicketPage extends BasePage {
 
@@ -25,13 +27,15 @@ public class MyTicketPage extends BasePage {
                 TABLE, columnName, value);
     }
 
-    private By cancelButtonOfRow(String departStation, String arriveStation, String seatType, String departDate, Integer amount) {
+
+
+    private By cancelButtonOfRow(Ticket ticket) {
         String xpath = TABLE + "//tr[.//input[@value='Cancel']"
-                + columnCondition("Depart Station", departStation)
-                + columnCondition("Arrive Station", arriveStation)
-                + columnCondition("Seat Type", seatType)
-                + columnCondition("Depart Date", departDate)
-                + columnCondition("Amount", amount == null ? null : String.valueOf(amount))
+                + columnCondition("Depart Station", ticket.getDepartStation())
+                + columnCondition("Arrive Station", ticket.getArriveStation())
+                + columnCondition("Seat Type", ticket.getSeatType())
+                + columnCondition("Depart Date", ticket.getDepartDate())
+                + columnCondition("Amount", String.valueOf(ticket.getAmount()))
                 + "]//input[@value='Cancel']";
         return By.xpath(xpath);
     }
@@ -40,10 +44,9 @@ public class MyTicketPage extends BasePage {
         return By.xpath("//input[@value='Cancel' and contains(@onclick,'DeleteTicket(" + ticketId + ")')]");
     }
 
-    // Get LatestID Ticket If Tickets have same info
-    private String getTicketId(String departStation, String arriveStation, String seatType,
-                               String departDate, Integer amount) {
-        By row = cancelButtonOfRow(departStation, arriveStation, seatType, departDate, amount);
+
+    private String getTicketId(Ticket ticket) {
+        By row = cancelButtonOfRow(ticket);
         find(row);
 
         return driver.findElements(row).stream()
@@ -62,18 +65,21 @@ public class MyTicketPage extends BasePage {
     }
 
 
-    public String cancelTicket(String departStation, String arriveStation, String seatType,String departDate, Integer amount) {
+    public String cancelTicket(Ticket ticket) {
+        if (ticket==null) { return null;}
+        BasePage basePage = new BasePage(driver);
+        basePage.gotoMyTicketPage();
         if (driver.findElements(
-                cancelButtonOfRow(departStation, arriveStation, seatType, departDate, amount)).isEmpty()) {
+                cancelButtonOfRow(ticket)).isEmpty()) {
             return null;
         }
-        String ticketId = getTicketId(departStation, arriveStation, seatType, departDate, amount);
+        String ticketId = getTicketId(ticket);
         cancelTicketById(ticketId);
         return ticketId;
     }
 
 
-    public boolean isTicketDisplayed(String ticketId) {
+    public boolean verifyTicketExist(String ticketId) {
         return !driver.findElements(cancelButtonOf(ticketId)).isEmpty();
     }
 }

@@ -1,9 +1,8 @@
 package Exercise5And8;
 
 import common.Constant.Constant;
-
+import dataObjects.Ticket;
 import pageObjects.Railway.BasePage;
-import pageObjects.Railway.MyTicketPage;
 import pageObjects.Railway.TimetablePage;
 import pageObjects.Railway.BookTicketPage;
 import common.Utilities.DateUtils;
@@ -17,63 +16,35 @@ public class Exercise5And8 extends BaseTest {
 
         SoftAssert softAssert = new SoftAssert();
 
+        String date = DateUtils.getFutureDate(7);
         String departStation = "Sài Gòn";
         String arriveStation = "Đà Nẵng";
         String seatType = "Soft seat";
-        Integer amount = 2;
 
-        System.out.println("1. Login Railway System with a valid account");
+        ticket = new Ticket(departStation, arriveStation, seatType, 2, date );
 
-
-        driver.get(Constant.RAILWAY_URL);
         BasePage basePage = new BasePage(driver);
+        TimetablePage timetablePage = new TimetablePage(driver);
+        BookTicketPage bookTicketPage = new BookTicketPage(driver);
+
+
+        basePage.navigatetoRailway();
+
         basePage.gotoLoginPage().login(Constant.USERNAME, Constant.PASSWORD);
 
-
-        System.out.println("2. Click on Timetable tab");
-
-        TimetablePage timetablePage = basePage.gotoTimetablePage();
-
-
-        System.out.println("3. Click on “check price” of Sai Gon-Da Nang");
+        basePage.gotoTimetablePage();
 
         timetablePage.clickCheckPrice(departStation, arriveStation);
 
-
-        System.out.println("4. Click on “book ticket” of “Soft seat”");
         timetablePage.clickBookTicketBySeat(seatType);
 
-        System.out.println("5. Choose Depart date is next week (next 7 days) and Ticket amount is 2");
-        System.out.println("6. Click on “book ticket”");
+        bookTicketPage.bookTicket(ticket);
 
 
-        String date = DateUtils.getFutureDate(7);
 
+        softAssert.assertTrue(bookTicketPage.verifySuccessBookTicketMessage("Ticket booked successfully!"));
 
-        BookTicketPage bookTicketPage = new BookTicketPage(driver);
-
-        bookTicketPage.bookTicket(date, null, null, null, amount);
-
-
-        String actualMessage = bookTicketPage.getSuccessBookTicketMessage();
-        String expectedMessage = "Ticket booked successfully!";
-
-
-        // Verify
-        softAssert.assertEquals(actualMessage, expectedMessage, "Success message is not displayed correctly.");
-
-        softAssert.assertEquals(bookTicketPage.getDepartStation(), departStation);
-        softAssert.assertEquals(bookTicketPage.getArriveStation(), arriveStation);
-        softAssert.assertEquals(bookTicketPage.getSeatType(), seatType);
-        softAssert.assertEquals(bookTicketPage.getDepartDate(), date);
-        softAssert.assertEquals(bookTicketPage.getAmount(), String.valueOf(amount));
-
-        //Cleanup data
-
-        basePage.gotoMyTicketPage();
-
-        MyTicketPage  myTicketPage = basePage.gotoMyTicketPage();
-        myTicketPage.cancelTicket(departStation, arriveStation, date, seatType, amount);
+        softAssert.assertTrue(bookTicketPage.verifyBookedTicket(ticket.getDepartStation(), ticket.getArriveStation(), ticket.getSeatType(), ticket.getAmount(), ticket.getDepartDate() ));
 
         softAssert.assertAll();
 

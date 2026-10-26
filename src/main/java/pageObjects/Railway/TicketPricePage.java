@@ -32,5 +32,9 @@ public class TicketPricePage extends BasePage {
         return find(By.xpath(String.format(PRICE_BY_SEAT_XPATH, seatCode))).getText().trim();
     }
 
+    public boolean verifyPriceForSeatType(String seatCode, Integer price) {
+        return Integer.valueOf(getPrice(seatCode)).equals(price);
+    }
+
 
 }

@@ -10,6 +10,8 @@ import pageObjects.Railway.BasePage;
 import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
 import org.openqa.selenium.NoSuchWindowException;
+import java.util.Set;
+
 
 public class EmailPage  extends BasePage {
 
@@ -38,7 +40,19 @@ public class EmailPage  extends BasePage {
     }
 
     public void clickLinkResetPassword() {
+        Set<String> oldTabs = driver.getWindowHandles();
         click(linkResetPassword);
+
+        new WebDriverWait(driver, Duration.ofSeconds(15))
+                .until(ExpectedConditions.numberOfWindowsToBe(oldTabs.size() + 1));
+
+        for (String tab : driver.getWindowHandles()) {
+            if (!oldTabs.contains(tab)) {
+                driver.switchTo().window(tab);
+                break;
+            }
+        }
+
     }
 
     public void clickmessageResetPassword() {
@@ -59,10 +73,21 @@ public class EmailPage  extends BasePage {
     }
 
     public void clickLinkConfirmMail() {
+        Set<String> oldTabs = driver.getWindowHandles();
         WebElement link = new WebDriverWait(driver, Duration.ofSeconds(35))
                 .until(ExpectedConditions.presenceOfElementLocated(lnkConfirmMail));
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", link);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.numberOfWindowsToBe(oldTabs.size() + 1));
+
+        for (String tab : driver.getWindowHandles()) {
+            if (!oldTabs.contains(tab)) {
+                driver.switchTo().window(tab);
+                return;
+            }
+        }
     }
 
     public void setUseAlias(boolean useAlias) {

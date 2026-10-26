@@ -15,23 +15,14 @@ public class LoginTest extends BaseTest {
     @Test
     public void TC01_UserCanLoginWithValidAccount() {
 
-        System.out.println("Step 1: Navigate to QA Railway Website");
-
-        driver.get(Constant.RAILWAY_URL);
-
-        System.out.println("Step 2: Click on \"Login\" tab");
-
-
         BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+
+        basePage.navigatetoRailway();
+
         basePage.gotoLoginPage();
 
-        System.out.println("Step 3. Enter valid Email and Password");
-        System.out.println("Step 4. Click on \"Login\" button");
-
-        LoginPage loginPage = new LoginPage(driver);
         loginPage.login(Constant.USERNAME, Constant.PASSWORD);
-
-        //Verify User is logged into Railway. Welcome user message is displayed.
 
         Assert.assertTrue(basePage.verifyWelcomeMessage("Welcome " + Constant.USERNAME), "Welcome message is not displayed. User might not be logged in.");
 
@@ -41,48 +32,41 @@ public class LoginTest extends BaseTest {
     @Test
     public void TC02_UserCannotLoginWithBlankUsername() {
 
-
-        System.out.println("Step 1: Navigate to QA Railway Website");
-
-        driver.get(Constant.RAILWAY_URL);
-
-        System.out.println("Step 2: Click on \"Login\" tab");
-
+        SoftAssert softAssert = new SoftAssert();
 
         BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+
+        basePage.navigatetoRailway();
+
         basePage.gotoLoginPage();
 
-        System.out.println("Step 3. Enter blank Username and valid Password");
-        System.out.println("Step 4. Click on \"Login\" button");
-
-        LoginPage loginPage = new LoginPage(driver);
         loginPage.login("", Constant.PASSWORD);
 
-        //Verify error message is displayed
-        Assert.assertEquals(loginPage.getLoginErrorMessage(), "There was a problem with your login and/or errors exist in your form. ", "Error message is not displayed correctly.");
+        softAssert.assertTrue(loginPage.verifyLoginErrorMessage("There was a problem with your login and/or errors exist in your form. "));
         Assert.assertFalse(basePage.isWelcomeUserMessageDisplayed(), "Welcome message is displayed. User might be logged in.");
 
+        softAssert.assertAll();
     }
 
     @Test
 
     public void TC03_UserCannotLogIntoRailwayWithInvalidPassword() {
 
-        //1. Navigate to QA Railway Website
-        driver.get(Constant.RAILWAY_URL);
+        SoftAssert softAssert = new SoftAssert();
 
-        //2. Click on "Login" tab
         BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+
+        basePage.navigatetoRailway();
+
         basePage.gotoLoginPage();
 
-        //3. Enter valid Email and invalid Password
-        //4. Click on "Login" button
-       LoginPage loginPage = new LoginPage(driver);
-       loginPage.login(Constant.USERNAME, "1234567899");
+        loginPage.login(Constant.USERNAME, "1234567899");
 
-       //Verify error message is displayed
-         Assert.assertEquals(loginPage.getLoginErrorMessage(), "There was a problem with your login and/or errors exist in your form.");
+        softAssert.assertTrue(loginPage.verifyLoginErrorMessage("There was a problem with your login and/or errors exist in your form."));
 
+        softAssert.assertAll();
     }
 
     @Test
@@ -90,34 +74,20 @@ public class LoginTest extends BaseTest {
 
         SoftAssert softAssert = new SoftAssert();
 
-        //1. Navigate to QA Railway Website
-        driver.get(Constant.RAILWAY_URL);
-
-        //2. Click on "Login" tab
         BasePage basePage = new BasePage(driver);
-        basePage.gotoLoginPage();
-
-
-        //3. Enter valid information into "Username" textbox except "Password" textbox.
-        //4. Click on "Login" button
-
         LoginPage loginPage = new LoginPage(driver);
 
+        basePage.navigatetoRailway();
+
+        basePage.gotoLoginPage();
+
         loginPage.login(Constant.USERNAME, "invalidpassword");
-        //Verify error message is displayed
-        softAssert.assertEquals(loginPage.getLoginErrorMessage(), "Invalid username or password. Please try again");
 
+        softAssert.assertTrue(loginPage.verifyLoginErrorMessage("Invalid username or password. Please try again"));
 
+        loginPage.loginWithManyTimes(3, Constant.USERNAME, Constant.PASSWORD);
 
-        //5. Repeat step 3 and 4 three more times.
-
-        for (int i = 0; i < 3; i++) {
-            loginPage.login(Constant.USERNAME, "invalidpassword");
-
-        }
-
-        //Verify error message is displayed
-        softAssert.assertEquals(loginPage.getLoginErrorMessage(), "You have used 4 out of 5 login attempts. After all 5 have been used, you will be unable to login for 15 minutes.");
+        softAssert.assertTrue(loginPage.verifyLoginErrorMessage("You have used 4 out of 5 login attempts. After all 5 have been used, you will be unable to login for 15 minutes."));
 
         softAssert.assertAll();
 
@@ -126,46 +96,35 @@ public class LoginTest extends BaseTest {
     @Test
     public void TC05_UserCannotLoginWithAnAccountHasntBeenActivated() {
 
-
-        //Precondition: Create a new account but don't activate it.
+        SoftAssert softAssert = new SoftAssert();
 
         EmailPage emailPage = new EmailPage(driver);
-        driver.get(Constant.GUERILLAMAIL_URL);
+        BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+        RegisterPage registerPage = new RegisterPage(driver);
+
+        basePage.navigatetoRailway();
 
         emailPage.setUseAlias(false);
 
-        // Get the temporary email
         String email = emailPage.getEmailAddress();
-        System.out.println("Temporary email: " + email);
 
         driver.switchTo().newWindow(WindowType.TAB);
-        driver.get(Constant.RAILWAY_URL);
 
-        //Register a new account with the temporary email
+        basePage.navigatetoRailway();
 
-        BasePage basePage = new BasePage(driver);
-        RegisterPage registerPage = basePage.gotoRegisterPage();
+        basePage.gotoRegisterPage();
         registerPage.register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
 
-
-        //1. Navigate to QA Railway Website
-        //2. Click on "Login" tab
         basePage.gotoLoginPage();
 
-        //3. Enter username and password of account hasn't been activated.
-        //4. Click on "Login" button
-
-        LoginPage loginPage = new LoginPage(driver);
         loginPage.login(email, Constant.PASSWORD);
 
-        //Verify error message is displayed
-        Assert.assertEquals(loginPage.getLoginErrorMessage(), "Invalid username or password. Please try again.");
+        softAssert.assertTrue(loginPage.verifyLoginErrorMessage("Invalid username or password. Please try again."));
+
+        softAssert.assertAll();
 
     }
-
-
-
-
 
 
 }

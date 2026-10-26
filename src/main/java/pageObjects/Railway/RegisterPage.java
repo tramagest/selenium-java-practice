@@ -3,11 +3,8 @@ package pageObjects.Railway;
 
 import common.Constant.Constant;
 import org.openqa.selenium.*;
-
 import java.time.Duration;
 import java.util.Set;
-
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pageObjects.guerrilamaill.EmailPage;
 
@@ -43,12 +40,25 @@ public class RegisterPage extends BasePage {
         return find(registerErrorPasswordMessage).getText();
     }
 
+    public boolean verifyRegisterErrorPasswordMessage(String message) {
+        return find(registerErrorPasswordMessage).isDisplayed();
+    }
+
     public String getRegisterErrorPIDMessage() {
         return find(registerErrorPIDMessage).getText();
     }
 
+    public boolean verifyRegisterErrorPIDMessage(String message) {
+        return find(registerErrorPIDMessage).isDisplayed();
+    }
+
     public String getRegisterErrorMessage() {
         return find(registerErrorMessage).getText();
+    }
+
+
+    public boolean verifyRegisterErrorMessage(String expectedErrorMessage) {
+        return find(registerErrorMessage).getText().equals(expectedErrorMessage);
     }
 
     public void register(String email, String password, String confirmPassword, String pid) {
@@ -87,6 +97,11 @@ public class RegisterPage extends BasePage {
     public String getmessageConfirmRegister(){
 
         return find(messageConfirmRegister).getText();
+    }
+
+    public boolean verifymessageConfirmRegister(String message) {
+
+        return find(messageConfirmRegister).getText().equals(message);
     }
 
     public String createActivatedAccount() {

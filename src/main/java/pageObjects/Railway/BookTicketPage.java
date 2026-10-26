@@ -1,6 +1,7 @@
 
 package pageObjects.Railway;
 
+import dataObjects.Ticket;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,6 +9,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+
 
 
 public class BookTicketPage extends BasePage {
@@ -49,8 +52,16 @@ public class BookTicketPage extends BasePage {
         return new Select(find(ddlDepartStation)).getFirstSelectedOption().getText().trim();
     }
 
+    public boolean verifyDepartStation(String departStation) {
+        return find(ddlDepartStation).getText().equals(departStation);
+    }
+
     public String getSelectedArriveStation() {
         return new Select(find(ddlArriveStation)).getFirstSelectedOption().getText().trim();
+    }
+
+    public boolean verifyArriveStation(String arriveStation) {
+        return find(ddlArriveStation).getText().equals(arriveStation);
     }
 
     public String getSelectedSeatType() {
@@ -88,6 +99,10 @@ public class BookTicketPage extends BasePage {
         return find(ttlsuccessBookTicket).getText().trim();
     }
 
+    public boolean verifySuccessBookTicketMessage(String message) {
+        return getSuccessBookTicketMessage().equals(message);
+    }
+
 
     public void selectDate(String date) {
         Select select = new Select(find(ddlDate));
@@ -115,33 +130,44 @@ public class BookTicketPage extends BasePage {
         select.selectByVisibleText(String.valueOf(amount));
     }
 
-    public void bookTicket(
-            String date,
-            String departStation,
-            String arriveStation,
-            String seatType,
-            Integer amount) {
+    public void bookTicket(Ticket ticket) {
 
-        if (date != null) {
-            selectDate(date);
+        if (ticket.getDepartDate() != null) {
+            selectDate(ticket.getDepartDate());
         }
-        if (departStation != null) {
+        if (ticket.getDepartStation() != null
+                && !getSelectedDepartStation().equals(ticket.getDepartStation())) {
             WebElement oldOption = find(ddlArriveStation).findElement(By.tagName("option"));
-            selectDepartStation(departStation);
+            selectDepartStation(ticket.getDepartStation());
             new WebDriverWait(driver, Duration.ofSeconds(5))
                     .until(ExpectedConditions.stalenessOf(oldOption));
         }
-        if (arriveStation != null) {
-            selectArriveStation(arriveStation);
+        if (ticket.getArriveStation() != null) {
+            selectArriveStation(ticket.getArriveStation());
         }
-        if (seatType != null) {
-            selectSeatType(seatType);
+        if (ticket.getSeatType() != null) {
+            selectSeatType(ticket.getSeatType());
         }
-        if (amount != null) {
-            selectTicketAmount(amount);
+        if (ticket.getAmount() != null) {
+            selectTicketAmount(ticket.getAmount());
         }
         click(btnBookTicket);
     }
+
+
+
+    public boolean verifyBookedTicket(String departStation, String arriveStation,
+                                      String seatType, Integer amount, String date) {
+        return (date == null || date.equals(getDepartDate()))
+                && (arriveStation == null || arriveStation.equals(getArriveStation()))
+                && (seatType == null || seatType.equals(getSeatType()))
+                && (amount == null || amount.equals(Integer.valueOf(getAmount())))
+                && (departStation == null || departStation.equals(getDepartStation()));
+    }
+
+
+
+
 
 
 }

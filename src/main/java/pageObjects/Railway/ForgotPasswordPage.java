@@ -70,9 +70,18 @@ public class ForgotPasswordPage extends BasePage {
         }
     }
 
+
+    public boolean verifyMessageResetPasswordError(String message) {
+        return getMessageResetPasswordError().equals(message);
+    }
+
     public String getMessageConfirmPasswordError()
     {
         return find(messageConfirmPasswordError).getText();
+    }
+
+    public boolean verifyMessageConfirmPasswordError(String message) {
+        return getMessageConfirmPasswordError().equals(message);
     }
 
 }
