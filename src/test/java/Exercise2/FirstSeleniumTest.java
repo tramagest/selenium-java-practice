@@ -3,38 +3,54 @@ package Exercise2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import common.Constant.Constant;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import common.Constant.Constant;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import testcases.BaseTest;
 
 
-public class FirstSeleniumTest  {
+public class FirstSeleniumTest extends BaseTest {
 
     private static final String EXPECTED_TITLE = "The Selenium Browser Automation Project | Selenium";
 
-    public static void main(String[] args) {
-
-        verifyTitle(new ChromeDriver(), "Chrome");
-
-
-        verifyTitle(new EdgeDriver(), "Edge");
-
-        verifyTitle(new FirefoxDriver(), "Firefox");
+    @DataProvider(name = "browsers")
+    public Object[][] browsers() {
+        return new Object[][]{
+                // tcName, browserName
+                {"Exercise2_Chrome", "Chrome"},
+                {"Exercise2_Edge", "Edge"},
+                {"Exercise2_Firefox", "Firefox"}
+        };
     }
 
-    private static void verifyTitle(WebDriver driver, String browserName) {
+
+    @Override
+    @BeforeMethod
+    public void setUp() {
+    }
+
+    @Test(dataProvider = "browsers")
+    public void verifyTitle(String tcName, String browserName) {
+
+        driver = createDriver(browserName);
+
         driver.manage().window().maximize();
         driver.get(Constant.DOCUMENT_URL);
 
-        String actual = driver.getTitle();
+        Assert.assertEquals(driver.getTitle(), EXPECTED_TITLE, "Wrong title on " + browserName);
+    }
 
-        if (actual.equals(EXPECTED_TITLE)) {
-            System.out.println("PASS [" + browserName + "]: Correct Title  - " + actual);
-        } else {
-            System.out.println("FAIL [" + browserName + "]: Error Title ");
-            System.out.println("Expected: " + EXPECTED_TITLE);
-            System.out.println("Actual:   " + actual);
+    private WebDriver createDriver(String browserName) {
+        switch (browserName) {
+            case "Edge":
+                return new EdgeDriver();
+            case "Firefox":
+                return new FirefoxDriver();
+            default:
+                return new ChromeDriver();
         }
-
-        driver.quit();
     }
 }

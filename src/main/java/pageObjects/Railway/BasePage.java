@@ -57,10 +57,6 @@ public class BasePage {
         }
     }
 
-
-
-
-
     public void logout() {
         clickTab("Log out");
     }
@@ -105,7 +101,12 @@ public class BasePage {
     }
 
     public boolean isWelcomeUserMessageDisplayed() {
-        return find(lblWelcome).getText().trim().equals("Welcome "+Constant.USERNAME);
+        if (driver.findElements(lblWelcome).isEmpty()) {
+            return false;
+        }
+
+        return find(lblWelcome).getText().trim()
+                .equals("Welcome " + Constant.USERNAME);
     }
 
     public boolean verifyWelcomeMessage(String expectedMessage) {

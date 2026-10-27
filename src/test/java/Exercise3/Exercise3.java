@@ -7,6 +7,7 @@ import testcases.BaseTest;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import dataObjects.Ticket;
+import common.Utilities.Log;
 
 public class Exercise3 extends BaseTest {
 
@@ -23,7 +24,11 @@ public class Exercise3 extends BaseTest {
 
         String email= registerPage.createActivatedAccount();
 
+        Log.step("1. Navigate to Railway");
+
         basePage.navigatetoRailway();
+
+        Log.step("2. Login");
 
         basePage.gotoLoginPage();
 
@@ -33,13 +38,16 @@ public class Exercise3 extends BaseTest {
 
         basePage.gotoBookTicketPage();
 
+        Log.step("Book 2 tickets to PhanThiet");
+
         bookTicketPage.bookTicket(ticket);
 
-
-        softAssert.assertTrue(bookTicketPage.verifySuccessBookTicketMessage("Ticket booked successfully!"));
+        softAssert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(),"Ticket booked successfully!");
 
         softAssert.assertTrue(bookTicketPage.verifyBookedTicket(null, ticket.getArriveStation(), null, ticket.getAmount(), null));
 
+        softAssert.assertEquals(bookTicketPage.getArriveStation(),ticket.getArriveStation());
+        softAssert.assertEquals(bookTicketPage.getAmount(),String.valueOf(ticket.getAmount()));
         softAssert.assertAll();
 
 
