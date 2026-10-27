@@ -109,7 +109,7 @@ public class LoginTest extends BaseTest {
 
         String email = emailPage.getEmailAddress();
 
-        driver.switchTo().newWindow(WindowType.TAB);
+        basePage.openNewTab();
 
         basePage.navigatetoRailway();
 

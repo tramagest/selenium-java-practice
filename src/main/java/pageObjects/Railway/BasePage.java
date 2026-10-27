@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
 import java.time.Duration;
 import java.util.Set;
+import org.openqa.selenium.WindowType;
 
 
 public class BasePage {
@@ -118,6 +119,18 @@ public class BasePage {
 
     public void navigatetoGuerrilamail(){
         driver.get(Constant.GUERILLAMAIL_URL);
+    }
+
+    public void openNewTab() {
+        driver.switchTo().newWindow(WindowType.TAB);
+    }
+
+    public void switchToTab(String tabHandle) {
+        driver.switchTo().window(tabHandle);
+    }
+
+    public String getCurrentTab() {
+        return driver.getWindowHandle();
     }
 
 }

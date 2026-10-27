@@ -6,11 +6,6 @@ import org.testng.annotations.Test;
 import pageObjects.Railway.RegisterPage;
 import pageObjects.Railway.BasePage;
 import pageObjects.Railway.HomePage;
-import java.util.Set;
-import java.time.Duration;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.WindowType;
 import pageObjects.guerrilamaill.EmailPage;
 
 public class RegisterTest extends BaseTest{
@@ -73,13 +68,13 @@ public class RegisterTest extends BaseTest{
 
         basePage.navigatetoGuerrilamail();
 
-        String mailTab = driver.getWindowHandle();
+        String mailTab = basePage.getCurrentTab();
 
         emailPage.setUseAlias(false);
 
         String email = emailPage.getEmailAddress();
 
-        driver.switchTo().newWindow(WindowType.TAB);
+        basePage.openNewTab();
 
         basePage.navigatetoRailway();
 
@@ -93,7 +88,7 @@ public class RegisterTest extends BaseTest{
 
         softAssert.assertEquals(registerPage.getRegisterSuccessTitle(), "Thank you for registering your account");
 
-        driver.switchTo().window(mailTab);
+        basePage.switchToTab(mailTab);
 
         emailPage.clickMessageConfirm();
 
