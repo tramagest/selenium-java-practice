@@ -149,6 +149,8 @@ public class BookTicketTest extends BaseTest {
         //Verify: Book ticket form is shown with the corrected "depart from" and "Arrive at"
 
         softAssert.assertTrue(bookTicketPage.verifyDepartStation(ticket.getDepartStation()));
+
+
         softAssert.assertTrue(bookTicketPage.verifyArriveStation(ticket.getArriveStation()));
 
         String seatType = bookTicketPage.getSelectedSeatType();
@@ -162,6 +164,7 @@ public class BookTicketTest extends BaseTest {
 
 
         softAssert.assertTrue(bookTicketPage.verifyBookedTicket(ticket.getDepartStation(), ticket.getArriveStation(), seatType, ticket.getAmount(), ticket.getDepartDate() ));
+
 
        softAssert.assertAll();
 

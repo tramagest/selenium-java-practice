@@ -19,6 +19,7 @@ public class Exercise3 extends BaseTest {
 
         BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = new RegisterPage(driver);
+        BookTicketPage bookTicketPage = new BookTicketPage(driver);
 
 
         String email= registerPage.createActivatedAccount();
@@ -31,7 +32,7 @@ public class Exercise3 extends BaseTest {
 
         loginPage.login(email, Constant.PASSWORD);
 
-        BookTicketPage bookTicketPage = basePage.gotoBookTicketPage();
+        basePage.gotoBookTicketPage();
 
         bookTicketPage.bookTicket(ticket);
 

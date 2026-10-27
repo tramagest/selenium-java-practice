@@ -53,7 +53,7 @@ public class BookTicketPage extends BasePage {
     }
 
     public boolean verifyDepartStation(String departStation) {
-        return find(ddlDepartStation).getText().equals(departStation);
+        return getSelectedDepartStation().equals(departStation);
     }
 
     public String getSelectedArriveStation() {
@@ -61,7 +61,7 @@ public class BookTicketPage extends BasePage {
     }
 
     public boolean verifyArriveStation(String arriveStation) {
-        return find(ddlArriveStation).getText().equals(arriveStation);
+        return getSelectedArriveStation().equals(arriveStation);
     }
 
     public String getSelectedSeatType() {
