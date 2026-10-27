@@ -53,9 +53,6 @@ public class ResetPasswordTest extends BaseTest {
 
         softAssert.assertEquals(actualToken,expectedToken);
 
-        //8. Input same password into 2 fields  "new password" and "confirm password"
-        //9. Click Reset Password
-
         forgotPasswordpage.enterResetPassword(Constant.PASSWORD, Constant.PASSWORD);
 
         //Verify: Message "The new password cannot be the same with the current password" is shown

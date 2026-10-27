@@ -21,7 +21,6 @@ public class Exercise3 extends BaseTest {
         RegisterPage registerPage = new RegisterPage(driver);
         BookTicketPage bookTicketPage = new BookTicketPage(driver);
 
-
         String email= registerPage.createActivatedAccount();
 
         basePage.navigatetoRailway();
@@ -38,7 +37,6 @@ public class Exercise3 extends BaseTest {
 
 
         softAssert.assertTrue(bookTicketPage.verifySuccessBookTicketMessage("Ticket booked successfully!"));
-
 
         softAssert.assertTrue(bookTicketPage.verifyBookedTicket(null, ticket.getArriveStation(), null, ticket.getAmount(), null));
 
