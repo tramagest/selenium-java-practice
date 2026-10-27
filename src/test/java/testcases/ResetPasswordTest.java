@@ -35,7 +35,7 @@ public class ResetPasswordTest extends BaseTest {
 
         forgotPasswordpage.enterEmail(email);
 
-        new EmailPage(driver).switchToMailTab();
+        emailPage.switchToMailTab();
 
         emailPage.clickmessageResetPassword();
 
@@ -87,7 +87,7 @@ public class ResetPasswordTest extends BaseTest {
 
         forgotPasswordpage.enterEmail(email);
 
-        new EmailPage(driver).switchToMailTab();
+        emailPage.switchToMailTab();
 
         emailPage.clickmessageResetPassword();
         String expectedToken= emailPage.getEmailResetToken();
