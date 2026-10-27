@@ -15,6 +15,10 @@ public class BaseTest {
     protected WebDriver driver;
     protected Ticket ticket;
 
+    public WebDriver getDriver() {
+        return driver;
+    }
+
     @BeforeMethod
     public void setUp() {
 
