@@ -1,10 +1,9 @@
 package testcases;
 
 import common.Utilities.Log;
-import dataObjects.Account;
 import dataObjects.InvalidData;
 import dataObjects.Message;
-import org.testng.Assert;
+import dataObjects.ValidData;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -39,12 +38,12 @@ public class LoginTest extends BaseTest {
 
         Log.step("3. Enter valid Email and Password");
         Log.step("4. Click on Login button");
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.verify(
                 softAssert,
                 "Welcome message",
-                Message.WELCOME_USER.format(Account.VALID.getEmail()),
+                Message.WELCOME_USER.format(ValidData.EMAIL.getValue()),
                 basePage.getWelcomeMessage()
         );
 
@@ -63,7 +62,7 @@ public class LoginTest extends BaseTest {
 
         Log.step("3. Enter Password and leave Username blank");
         Log.step("4. Click on Login button");
-        loginPage.login(InvalidData.EMPTY.getValue(), Account.VALID.getPassword());
+        loginPage.login(InvalidData.EMPTY.getValue(), ValidData.PASSWORD.getValue());
 
         Log.verify(
                 softAssert,
@@ -76,7 +75,7 @@ public class LoginTest extends BaseTest {
                 softAssert,
                 "Welcome message displayed",
                 false,
-                basePage.isWelcomeUserMessageDisplayed(Account.VALID.getEmail())
+                basePage.isWelcomeUserMessageDisplayed(ValidData.EMAIL.getValue())
         );
 
         softAssert.assertAll();
@@ -95,7 +94,7 @@ public class LoginTest extends BaseTest {
         Log.step("3. Enter valid Email and invalid Password");
         Log.step("4. Click on Login button");
         loginPage.login(
-                Account.VALID.getEmail(),
+                ValidData.EMAIL.getValue(),
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
@@ -120,7 +119,7 @@ public class LoginTest extends BaseTest {
         Log.step("3. Enter valid Email and invalid Password");
         Log.step("4. Click on Login button");
         loginPage.login(
-                Account.VALID.getEmail(),
+                ValidData.EMAIL.getValue(),
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
@@ -135,7 +134,7 @@ public class LoginTest extends BaseTest {
 
         loginPage.loginWithManyTimes(
                 3,
-                Account.VALID.getEmail(),
+                ValidData.EMAIL.getValue(),
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
@@ -166,9 +165,9 @@ public class LoginTest extends BaseTest {
         basePage.gotoRegisterPage();
         registerPage.register(
                 email,
-                Account.VALID.getPassword(),
-                Account.VALID.getPassword(),
-                Account.VALID.getPid()
+                ValidData.PASSWORD.getValue(),
+                ValidData.PASSWORD.getValue(),
+                ValidData.PID.getValue()
         );
 
         Log.step("2. Click on Login tab");
@@ -176,7 +175,7 @@ public class LoginTest extends BaseTest {
 
         Log.step("3. Enter credentials of an account that hasn't been activated");
         Log.step("4. Click on Login button");
-        loginPage.login(email, Account.VALID.getPassword());
+        loginPage.login(email, ValidData.PASSWORD.getValue());
 
         Log.verify(
                 softAssert,

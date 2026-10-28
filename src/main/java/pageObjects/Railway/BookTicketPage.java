@@ -1,10 +1,9 @@
 package pageObjects.Railway;
 
-import common.Utilities.Log;
+import common.Utilities.VerifyResult;
 import dataObjects.Message;
 import dataObjects.SeatType;
 import dataObjects.Station;
-import dataObjects.TableColumn;
 import dataObjects.Ticket;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,6 +20,12 @@ public class BookTicketPage extends BasePage {
         super(driver);
     }
 
+    private final String DEPART_STATION = "Depart Station";
+    private final String ARRIVE_STATION = "Arrive Station";
+    private final String SEAT_TYPE = "Seat Type";
+    private final String DEPART_DATE = "Depart Date";
+    private final String AMOUNT = "Amount";
+
     private final By ddlArriveStation = By.xpath("//select[@name='ArriveStation']");
     private final By ddlTicketAmount = By.xpath("//select[@name='TicketAmount']");
     private final By ddlDate = By.xpath("//select[@name='Date']");
@@ -33,8 +38,12 @@ public class BookTicketPage extends BasePage {
             "//table[contains(@class,'MyTable')]//tr[td]"
                     + "/td[count(ancestor::table//th[normalize-space()='%s']/preceding-sibling::th)+1]";
 
-    public String getTicketInfo(TableColumn column) {
-        return find(By.xpath(String.format(TICKET_INFO_XPATH, column.getName()))).getText().trim();
+    public String getTicketInfo(String column) {
+        return find(By.xpath(String.format(TICKET_INFO_XPATH, column))).getText().trim();
+    }
+
+    public String getSelectedDepartdate() {
+        return new Select(find(ddlDate)).getFirstSelectedOption().getText().trim();
     }
 
     public String getSelectedDepartStation() {
@@ -57,14 +66,12 @@ public class BookTicketPage extends BasePage {
         return new Select(find(ddlSeatType)).getFirstSelectedOption().getText().trim();
     }
 
-    public String getDepartStation() { return getTicketInfo(TableColumn.DEPART_STATION); }
-    public String getArriveStation() { return getTicketInfo(TableColumn.ARRIVE_STATION); }
-    public String getSeatType()      { return getTicketInfo(TableColumn.SEAT_TYPE); }
-    public String getDepartDate()    { return getTicketInfo(TableColumn.DEPART_DATE); }
-    public String getBookDate()      { return getTicketInfo(TableColumn.BOOK_DATE); }
-    public String getExpiredDate()   { return getTicketInfo(TableColumn.EXPIRED_DATE); }
-    public String getAmount()        { return getTicketInfo(TableColumn.AMOUNT); }
-    public String getTotalPrice()    { return getTicketInfo(TableColumn.TOTAL_PRICE); }
+    public String getDepartStation() { return getTicketInfo(DEPART_STATION); }
+    public String getArriveStation() { return getTicketInfo(ARRIVE_STATION); }
+    public String getSeatType()      { return getTicketInfo(SEAT_TYPE); }
+    public String getDepartDate()    { return getTicketInfo(DEPART_DATE); }
+    public String getAmount()        { return getTicketInfo(AMOUNT); }
+
 
     public String getSuccessBookTicketMessage() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -120,36 +127,40 @@ public class BookTicketPage extends BasePage {
     }
 
 
-    public boolean verifyBookedTicket(Ticket ticket) {
+
+
+    public VerifyResult verifyBookedTicket(String departDate, String departStation,
+                                           String arriveStation, String seatType, Integer amount) {
         String expected = "";
         String actual = "";
 
-        if (ticket.getDepartDate() != null) {
-            expected += "Depart date: " + ticket.getDepartDate() + " | ";
+        if (departDate != null) {
+            expected += "Depart date: " + departDate + " | ";
             actual += "Depart date: " + getDepartDate() + " | ";
         }
 
-        if (ticket.getDepartStationName() != null) {
-            expected += "Depart station: " + ticket.getDepartStationName() + " | ";
+        if (departStation != null) {
+            expected += "Depart station: " + departStation + " | ";
             actual += "Depart station: " + getDepartStation() + " | ";
         }
 
-        if (ticket.getArriveStationName() != null) {
-            expected += "Arrive station: " + ticket.getArriveStationName() + " | ";
+        if (arriveStation != null) {
+            expected += "Arrive station: " + arriveStation + " | ";
             actual += "Arrive station: " + getArriveStation() + " | ";
         }
 
-        if (ticket.getSeatTypeName() != null) {
-            expected += "Seat type: " + ticket.getSeatTypeName() + " | ";
+        if (seatType != null) {
+            expected += "Seat type: " + seatType + " | ";
             actual += "Seat type: " + getSeatType() + " | ";
         }
 
-        expected += "Amount: " + ticket.getAmount();
-        actual += "Amount: " + getAmount();
+        if (amount != null) {
+            expected += "Amount: " + amount + " | ";
+            actual += "Amount: " + getAmount() + " | ";
+        }
 
-        Log.info("Expected: " + expected);
-        Log.info("Actual: " + actual);
+        boolean result = expected.equals(actual);
 
-        return expected.equals(actual);
+        return new VerifyResult(result, expected, actual);
     }
 }

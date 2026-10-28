@@ -1,9 +1,9 @@
 package testcases;
 
 import common.Utilities.Log;
-import dataObjects.Account;
 import dataObjects.InvalidData;
 import dataObjects.Message;
+import dataObjects.ValidData;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -44,10 +44,10 @@ public class RegisterTest extends BaseTest {
         Log.step("4. Click on Register button");
 
         registerPage.register(
-                Account.VALID.getEmail(),
-                Account.VALID.getPassword(),
-                Account.VALID.getPassword(),
-                Account.VALID.getPid()
+                ValidData.EMAIL.getValue(),
+                ValidData.PASSWORD.getValue(),
+                ValidData.PASSWORD.getValue(),
+                ValidData.PID.getValue()
         );
 
         Log.verify(
@@ -81,7 +81,7 @@ public class RegisterTest extends BaseTest {
         Log.step("4. Click on Register button");
 
         registerPage.register(
-                Account.VALID.getEmail(),
+                ValidData.EMAIL.getValue(),
                 InvalidData.EMPTY.getValue(),
                 InvalidData.EMPTY.getValue(),
                 InvalidData.EMPTY.getValue()
@@ -155,9 +155,9 @@ public class RegisterTest extends BaseTest {
 
         registerPage.register(
                 email,
-                Account.VALID.getPassword(),
-                Account.VALID.getPassword(),
-                Account.VALID.getPid()
+                ValidData.PASSWORD.getValue(),
+                ValidData.PASSWORD.getValue(),
+                ValidData.PID.getValue()
         );
 
         Log.verify(

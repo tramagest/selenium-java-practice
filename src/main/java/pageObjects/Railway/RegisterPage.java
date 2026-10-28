@@ -2,13 +2,14 @@
 package pageObjects.Railway;
 
 import common.Constant.Constant;
+import dataObjects.ValidData;
 import org.openqa.selenium.*;
 import java.time.Duration;
 import java.util.Set;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pageObjects.guerrilamaill.EmailPage;
-import dataObjects.Account;
 import dataObjects.Message;
+
 
 public class RegisterPage extends BasePage {
 
@@ -115,7 +116,7 @@ public class RegisterPage extends BasePage {
         driver.get(Constant.RAILWAY_URL);
         new HomePage(driver).clickCreateAccountLink();
 
-        register(email, Account.VALID.getPassword(), Account.VALID.getPassword(), Account.VALID.getPid());
+        register(email, ValidData.PASSWORD.getValue(), ValidData.PASSWORD.getValue(), ValidData.PID.getValue());
 
         emailPage.switchToMailTab();
         emailPage.clickMessageConfirm();

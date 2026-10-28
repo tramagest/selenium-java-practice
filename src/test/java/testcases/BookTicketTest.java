@@ -2,12 +2,8 @@ package testcases;
 
 import common.Utilities.DateUtils;
 import common.Utilities.Log;
-import dataObjects.Account;
-import dataObjects.Message;
-import dataObjects.SeatType;
-import dataObjects.Station;
-import dataObjects.Ticket;
-import dataObjects.TicketPrice;
+import common.Utilities.VerifyResult;
+import dataObjects.*;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -49,13 +45,16 @@ public class BookTicketTest extends BaseTest {
 
         basePage.gotoLoginPage();
         Log.step("2. Login with a valid account");
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on Book ticket tab");
         basePage.gotoBookTicketPage();
 
         Log.step("4. Select date, stations, seat type and ticket amount");
+
         bookTicketPage.bookTicket(ticket);
+
+        VerifyResult r = bookTicketPage.verifyBookedTicket(ticket.getDepartStationName(), ticket.getArriveStationName(), ticket.getSeatTypeName(), ticket.getDepartDate(), ticket.getAmount());
 
 
 
@@ -66,10 +65,7 @@ public class BookTicketTest extends BaseTest {
                 bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyBookedTicket(ticket),
-                "Booked ticket information is incorrect"
-        );
+        Log.verify(softAssert, "booked ticket", r.getExpected(), r.getActual());
 
         softAssert.assertAll();
     }
@@ -91,7 +87,7 @@ public class BookTicketTest extends BaseTest {
 
         Log.step("2. Login with a valid account");
         basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on Book ticket tab");
         basePage.gotoBookTicketPage();
@@ -99,7 +95,7 @@ public class BookTicketTest extends BaseTest {
         Log.step("4. Select the departure date, route, seat type and amount 5");
         bookTicketPage.bookTicket(ticket);
 
-
+        VerifyResult r = bookTicketPage.verifyBookedTicket(ticket.getDepartStationName(), ticket.getArriveStationName(), ticket.getSeatTypeName(), ticket.getDepartDate(), ticket.getAmount());
 
         Log.verify(
                 softAssert,
@@ -108,10 +104,7 @@ public class BookTicketTest extends BaseTest {
                 bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyBookedTicket(ticket),
-                "Booked ticket information is incorrect"
-        );
+        Log.verify(softAssert, "booked ticket", r.getExpected(), r.getActual());
 
         softAssert.assertAll();
     }
@@ -120,12 +113,14 @@ public class BookTicketTest extends BaseTest {
     public void TC14_UserCanCheckPriceOfTicketFromTimetable() {
         SoftAssert softAssert = new SoftAssert();
 
+
+
         Log.step("1. Navigate to QA Railway Website");
         basePage.navigatetoRailway();
 
         Log.step("2. Login with a valid account");
         basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on Timetable tab");
         basePage.gotoTimetablePage();
@@ -133,7 +128,12 @@ public class BookTicketTest extends BaseTest {
         Log.step("4. Click Check Price for the route from Đà Nẵng to Sài Gòn");
         timetablePage.clickCheckPrice(Station.DA_NANG, Station.SAI_GON);
 
-
+        Integer SeatType_HS= 310000;
+        Integer SeatType_SS= 335000;
+        Integer SeatType_SSC= 360000;
+        Integer SeatType_HB= 410000;
+        Integer SeatType_SB= 460000;
+        Integer SeatType_SBC= 510000;
 
         Log.verify(
                 softAssert,
@@ -152,43 +152,43 @@ public class BookTicketTest extends BaseTest {
         Log.verify(
                 softAssert,
                 "Hard seat price",
-                String.valueOf(TicketPrice.HS.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.HS.getSeatType())
+                String.valueOf(SeatType_HS),
+                ticketPricePage.getPrice(SeatType.HS)
         );
 
         Log.verify(
                 softAssert,
                 "Soft seat price",
-                String.valueOf(TicketPrice.SS.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.SS.getSeatType())
+                String.valueOf(SeatType_SS),
+                ticketPricePage.getPrice(SeatType.SS)
         );
 
         Log.verify(
                 softAssert,
                 "Soft seat with air conditioner price",
-                String.valueOf(TicketPrice.SSC.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.SSC.getSeatType())
+                String.valueOf(SeatType_SSC),
+                ticketPricePage.getPrice(SeatType.SSC)
         );
 
         Log.verify(
                 softAssert,
                 "Hard bed price",
-                String.valueOf(TicketPrice.HB.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.HB.getSeatType())
+                String.valueOf(SeatType_HB),
+                ticketPricePage.getPrice(SeatType.HB)
         );
 
         Log.verify(
                 softAssert,
                 "Soft bed price",
-                String.valueOf(TicketPrice.SB.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.SB.getSeatType())
+                String.valueOf(SeatType_SB),
+                ticketPricePage.getPrice(SeatType.SB)
         );
 
         Log.verify(
                 softAssert,
                 "Soft bed with air conditioner price",
-                String.valueOf(TicketPrice.SBC.getPrice()),
-                ticketPricePage.getPrice(TicketPrice.SBC.getSeatType())
+                String.valueOf(SeatType_SBC),
+                ticketPricePage.getPrice(SeatType.SBC)
         );
 
         softAssert.assertAll();
@@ -211,7 +211,7 @@ public class BookTicketTest extends BaseTest {
 
         Log.step("2. Login with a valid account");
         basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on Timetable tab");
         basePage.gotoTimetablePage();
@@ -240,10 +240,11 @@ public class BookTicketTest extends BaseTest {
 
         String selectedSeatType = bookTicketPage.getSelectedSeatType();
 
+
         Log.step("5. Select the departure date and ticket amount 2");
         bookTicketPage.bookTicket(ticket);
 
-
+        VerifyResult r = bookTicketPage.verifyBookedTicket(ticket.getDepartStationName(), ticket.getArriveStationName(), selectedSeatType, ticket.getDepartDate(), ticket.getAmount());
 
         Log.verify(
                 softAssert,
@@ -252,17 +253,7 @@ public class BookTicketTest extends BaseTest {
                 bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyBookedTicket(ticket),
-                "Booked ticket information is incorrect"
-        );
-
-        Log.verify(
-                softAssert,
-                "Seat type remains unchanged",
-                selectedSeatType,
-                bookTicketPage.getSeatType()
-        );
+        Log.verify(softAssert, "booked ticket", r.getExpected(), r.getActual());
 
         softAssert.assertAll();
     }

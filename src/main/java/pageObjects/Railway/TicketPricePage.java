@@ -2,8 +2,6 @@ package pageObjects.Railway;
 
 import dataObjects.Message;
 import dataObjects.SeatType;
-import dataObjects.TableColumn;
-import dataObjects.TicketPrice;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -12,6 +10,10 @@ public class TicketPricePage extends BasePage {
     public TicketPricePage(WebDriver driver) {
         super(driver);
     }
+
+    private final String PRICE_VND ="Price (VND)";
+    private final String PRICE_SEAT_TYPE= "Seat type";
+
 
     private final By lblTicketPricePageTitle = By.xpath("//div[@id='content']/h1");
 
@@ -34,13 +36,9 @@ public class TicketPricePage extends BasePage {
 
     public String getPrice(SeatType seatType) {
         String xpath = String.format(PRICE_BY_SEAT_XPATH,
-                TableColumn.PRICE_VND.getName(),
-                TableColumn.PRICE_SEAT_TYPE.getName(),
+                PRICE_VND,PRICE_SEAT_TYPE,
                 seatType.getCode());
         return find(By.xpath(xpath)).getText().trim();
     }
 
-    public boolean verifyPrice(TicketPrice ticketPrice) {
-        return Integer.valueOf(getPrice(ticketPrice.getSeatType())).equals(ticketPrice.getPrice());
-    }
-}
+  }

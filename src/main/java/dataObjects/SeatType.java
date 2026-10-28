@@ -18,4 +18,13 @@ public enum SeatType {
 
     public String getCode() { return code; }
     public String getName() { return displayName; }
+
+    public static SeatType fromName(String name) {
+        for (SeatType s : values()) {
+            if (s.getName().equalsIgnoreCase(name.trim())) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("Unknown seat type: " + name);
+    }
 }

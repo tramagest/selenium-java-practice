@@ -10,15 +10,22 @@ import org.openqa.selenium.WebDriver;
 import java.time.Duration;
 import java.util.Set;
 import org.openqa.selenium.WindowType;
-import dataObjects.TabName;
 import dataObjects.Message;
-import dataObjects.Account;
 
 
 public class BasePage {
 
     protected WebDriver driver;
     protected WebDriverWait wait;
+
+    private final String LOGIN = "Login";
+    private final String FAQ = "FAQ";
+    private final String TIMETABLE = "Timetable";
+    private final String BOOK_TICKET = "Book ticket";
+    private final String MY_TICKET = "My ticket";
+    private final String LOG_OUT = "Log out";
+    private final String REGISTER = "Register";
+
 
     
 
@@ -45,8 +52,8 @@ public class BasePage {
     }
 
     // ClickTab
-    protected void clickTab(TabName tab) {
-        click(By.xpath(String.format(TAB_XPATH, tab.getName())));
+    protected void clickTab(String tab) {
+        click(By.xpath(String.format(TAB_XPATH, tab)));
     }
 
     protected void switchToNewTab(Set<String> oldTabs) {
@@ -62,42 +69,42 @@ public class BasePage {
     }
 
     public void logout() {
-        clickTab(TabName.LOG_OUT);
+        clickTab(LOG_OUT);
     }
 
 
     public boolean isLoggedOut() {
-        return driver.findElements(By.xpath(String.format(TAB_XPATH, TabName.LOG_OUT.getName()))).isEmpty();
+        return driver.findElements(By.xpath(String.format(TAB_XPATH, LOG_OUT))).isEmpty();
     }
 
 
     public FAQPage gotoFAQPage() {
-        clickTab(TabName.FAQ);
+        clickTab(FAQ);
         return new FAQPage(driver);
     }
 
     public LoginPage gotoLoginPage() {
-        clickTab(TabName.LOGIN);
+        clickTab(LOGIN);
         return new LoginPage(driver);
     }
 
     public TimetablePage gotoTimetablePage() {
-        clickTab(TabName.TIMETABLE);
+        clickTab(TIMETABLE);
         return new TimetablePage(driver);
     }
 
     public BookTicketPage gotoBookTicketPage() {
-        clickTab(TabName.BOOK_TICKET);
+        clickTab(BOOK_TICKET);
         return new BookTicketPage(driver);
     }
 
     public MyTicketPage gotoMyTicketPage() {
-        clickTab(TabName.MY_TICKET);
+        clickTab(MY_TICKET);
         return new MyTicketPage(driver);
     }
 
     public RegisterPage gotoRegisterPage() {
-        clickTab(TabName.REGISTER);
+        clickTab(REGISTER);
         return new RegisterPage(driver);
     }
 

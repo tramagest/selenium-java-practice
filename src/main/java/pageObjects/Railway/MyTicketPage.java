@@ -1,6 +1,5 @@
 package pageObjects.Railway;
 
-import dataObjects.TableColumn;
 import dataObjects.Ticket;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,30 +11,37 @@ import java.util.Comparator;
 
 public class MyTicketPage extends BasePage {
 
+    private final String DEPART_STATION = "Depart Station";
+    private final String ARRIVE_STATION = "Arrive Station";
+    private final String SEAT_TYPE = "Seat Type";
+    private final String DEPART_DATE = "Depart Date";
+    private final String AMOUNT = "Amount";
+
+
     private static final String TABLE = "//table[contains(@class,'MyTable')]";
 
     public MyTicketPage(WebDriver driver) {
         super(driver);
     }
 
-    private String columnCondition(TableColumn column, String value) {
+    private String columnCondition(String column, String value) {
         if (value == null) {
             return "";
         }
         return String.format(
                 " and normalize-space(td[count(%s//th[normalize-space()='%s']/preceding-sibling::th)+1])='%s'",
-                TABLE, column.getName(), value);
+                TABLE, column, value);
     }
 
     private By cancelButtonOfRow(Ticket ticket) {
         String amount = ticket.getAmount() == null ? null : String.valueOf(ticket.getAmount());
 
         String xpath = TABLE + "//tr[.//input[@value='" + "Cancel" + "']"
-                + columnCondition(TableColumn.DEPART_STATION, ticket.getDepartStationName())
-                + columnCondition(TableColumn.ARRIVE_STATION, ticket.getArriveStationName())
-                + columnCondition(TableColumn.SEAT_TYPE, ticket.getSeatTypeName())
-                + columnCondition(TableColumn.DEPART_DATE, ticket.getDepartDate())
-                + columnCondition(TableColumn.AMOUNT, amount)
+                + columnCondition(DEPART_STATION, ticket.getDepartStationName())
+                + columnCondition(ARRIVE_STATION, ticket.getArriveStationName())
+                + columnCondition(SEAT_TYPE, ticket.getSeatTypeName())
+                + columnCondition(DEPART_DATE, ticket.getDepartDate())
+                + columnCondition(AMOUNT, amount)
                 + "]//input[@value='" + "Cancel" + "']";
         return By.xpath(xpath);
     }

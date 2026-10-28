@@ -2,11 +2,8 @@ package Exercise5And8;
 
 import common.Utilities.DateUtils;
 import common.Utilities.Log;
-import dataObjects.Account;
-import dataObjects.Message;
-import dataObjects.SeatType;
-import dataObjects.Station;
-import dataObjects.Ticket;
+import common.Utilities.VerifyResult;
+import dataObjects.*;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageObjects.Railway.BasePage;
@@ -42,7 +39,7 @@ public class Exercise5And8 extends BaseTest {
 
         Log.step("2. Login with a valid account");
         LoginPage loginPage = basePage.gotoLoginPage();
-        loginPage.login(email, Account.VALID.getPassword());
+        loginPage.login(email, ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on Timetable tab");
         basePage.gotoTimetablePage();
@@ -53,7 +50,7 @@ public class Exercise5And8 extends BaseTest {
         Log.step("5. Select the departure date and ticket amount 2, then book");
         bookTicketPage.bookTicket(ticket);
 
-        Log.info("Verify booked ticket information");
+        VerifyResult r = bookTicketPage.verifyBookedTicket(ticket.getDepartStationName(), ticket.getArriveStationName(), ticket.getSeatTypeName(), ticket.getDepartDate(), ticket.getAmount());
 
         Log.verify(
                 softAssert,
@@ -62,12 +59,7 @@ public class Exercise5And8 extends BaseTest {
                 bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        Log.verify(
-                softAssert,
-                "Verify booked ticket information",
-                true,
-                bookTicketPage.verifyBookedTicket(ticket)
-        );
+        Log.verify(softAssert, "booked ticket", r.getExpected(), r.getActual());
 
         softAssert.assertAll();
     }

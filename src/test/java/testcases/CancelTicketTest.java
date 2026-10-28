@@ -1,10 +1,10 @@
 package testcases;
 
 import common.Utilities.Log;
-import dataObjects.Account;
 import dataObjects.SeatType;
 import dataObjects.Station;
 import dataObjects.Ticket;
+import dataObjects.ValidData;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageObjects.Railway.BasePage;
@@ -36,7 +36,7 @@ public class CancelTicketTest extends BaseTest {
 
         Log.step("2. Login with a valid account");
         basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         basePage.gotoBookTicketPage();
 

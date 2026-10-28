@@ -1,10 +1,11 @@
 package Exercise3;
 
 import common.Utilities.Log;
-import dataObjects.Account;
+import common.Utilities.VerifyResult;
 import dataObjects.Message;
 import dataObjects.Station;
 import dataObjects.Ticket;
+import dataObjects.ValidData;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageObjects.Railway.BasePage;
@@ -38,12 +39,20 @@ public class Exercise3 extends BaseTest {
 
         Log.step("2. Login with the newly activated account");
         LoginPage loginPage = basePage.gotoLoginPage();
-        loginPage.login(email, Account.VALID.getPassword());
+        loginPage.login(email, ValidData.PASSWORD.getValue());
 
         Log.step("3. Open Book ticket and book 2 tickets to Phan Thiết");
         basePage.gotoBookTicketPage();
+
+        String DepartStation = bookTicketPage.getSelectedDepartStation();
+        String DepartDate = bookTicketPage.getSelectedDepartdate();
+        String SeatType = bookTicketPage.getSelectedSeatType();
+
+
+
         bookTicketPage.bookTicket(ticket);
 
+        VerifyResult r = bookTicketPage.verifyBookedTicket(DepartStation, ticket.getArriveStationName(), SeatType, DepartDate, ticket.getAmount());
 
         Log.verify(
                 softAssert,
@@ -52,10 +61,7 @@ public class Exercise3 extends BaseTest {
                 bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyBookedTicket(ticket),
-                "Booked ticket information is incorrect"
-        );
+        Log.verify(softAssert, "booked ticket", r.getExpected(), r.getActual());
 
         softAssert.assertAll();
     }

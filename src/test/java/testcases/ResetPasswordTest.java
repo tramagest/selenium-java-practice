@@ -1,9 +1,9 @@
 package testcases;
 
 import common.Utilities.Log;
-import dataObjects.Account;
 import dataObjects.InvalidData;
 import dataObjects.Message;
+import dataObjects.ValidData;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -76,8 +76,8 @@ public class ResetPasswordTest extends BaseTest {
         Log.step("9. Click Reset Password");
 
         forgotPasswordPage.enterResetPassword(
-                Account.VALID.getPassword(),
-                Account.VALID.getPassword()
+                ValidData.PASSWORD.getValue(),
+                ValidData.PASSWORD.getValue()
         );
 
 
@@ -140,7 +140,7 @@ public class ResetPasswordTest extends BaseTest {
 
         Log.step("8. Enter different values into the new password and confirmation fields");
         forgotPasswordPage.enterResetPassword(
-                Account.VALID.getPassword(),
+                ValidData.PASSWORD.getValue(),
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 

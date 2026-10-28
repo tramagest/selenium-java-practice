@@ -1,7 +1,7 @@
 package testcases;
 
 import common.Utilities.Log;
-import dataObjects.Account;
+import dataObjects.ValidData;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageObjects.Railway.BasePage;
@@ -24,7 +24,7 @@ public class LogoutTest extends BaseTest {
         basePage.gotoLoginPage();
 
         Log.step("2. Login with valid Email and Password");
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.step("3. Click on FAQ tab");
         basePage.gotoFAQPage();
