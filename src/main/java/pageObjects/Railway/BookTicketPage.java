@@ -118,7 +118,7 @@ public class BookTicketPage extends BasePage {
         click(btnBookTicket);
     }
 
-    // field nào của ticket null thì bỏ qua, giống logic cũ
+
     public boolean verifyBookedTicket(Ticket ticket) {
         return (ticket.getDepartDate() == null || ticket.getDepartDate().equals(getDepartDate()))
                 && (ticket.getArriveStation() == null || ticket.getArriveStationName().equals(getArriveStation()))

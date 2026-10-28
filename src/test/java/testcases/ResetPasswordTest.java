@@ -1,13 +1,14 @@
 package testcases;
 
 import common.Utilities.Log;
-import org.testng.asserts.SoftAssert;
-import common.Constant.Constant;
+import dataObjects.Account;
+import dataObjects.InvalidData;
+import dataObjects.Message;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pageObjects.Railway.*;
 import pageObjects.guerrilamaill.EmailPage;
-import org.testng.annotations.BeforeMethod;
-
 
 public class ResetPasswordTest extends BaseTest {
 
@@ -26,126 +27,124 @@ public class ResetPasswordTest extends BaseTest {
         forgotPasswordPage = new ForgotPasswordPage(driver);
     }
 
-    @Test (description = "TC10: Reset password shows error if the new password is same as current")
-    public void TC10_MessageErrorDisplaysWhenNewPasswordIsSameAsCurrent(){
-
-
+    @Test(description = "TC10: Reset password shows error if the new password is the same as current")
+    public void TC10_MessageErrorDisplaysWhenNewPasswordIsSameAsCurrent() {
         SoftAssert softAssert = new SoftAssert();
 
         String email = registerPage.createActivatedAccount();
 
         Log.step("1. Navigate to QA Railway Login page");
-
         basePage.navigatetoRailway();
-
         basePage.gotoLoginPage();
 
-        Log.step("2. Click on \"Forgot Password page\" link");
-
+        Log.step("2. Click on Forgot Password link");
         loginPage.clickForgotPasswordLink();
 
         Log.step("3. Enter the email address of the activated account");
-        Log.step("4. Click on \"Send Instructions\" button");
-
+        Log.step("4. Click on Send Instructions button");
         forgotPasswordPage.enterEmail(email);
 
-        Log.step("5. Login to the mailbox (the same mailbox when creating account)");
-
+        Log.step("5. Switch to the mailbox");
         emailPage.switchToMailTab();
 
-        Log.step("6. Open email with subject contaning \"Please reset your password\" and the email of the account at step 3");
-
+        Log.step("6. Open the password reset email");
         emailPage.clickmessageResetPassword();
 
-        String expectedToken= emailPage.getEmailResetToken();
+        String expectedToken = emailPage.getEmailResetToken();
 
-        Log.step("7. Click on reset link");
-
+        Log.step("7. Click on the reset link");
         emailPage.clickLinkResetPassword();
 
-        Log.info("reset password token");
+        Log.info("Verify reset password form and token");
 
-        softAssert.assertEquals(forgotPasswordPage.getTitleFormResetPassword(),"Password Change Form");
+        softAssert.assertEquals(
+                forgotPasswordPage.getTitleFormResetPassword(),
+                Message.RESET_FORM_TITLE.getText()
+        );
 
         String actualToken = forgotPasswordPage.getForgotResetResetToken();
 
-        softAssert.assertEquals(actualToken,expectedToken);
+        softAssert.assertEquals(actualToken, expectedToken);
 
-        Log.step("8. Input same password into 2 fields  \"new password\" and \"confirm password\"");
+        Log.step("8. Enter the current password into both fields");
         Log.step("9. Click Reset Password");
 
-        forgotPasswordPage.enterResetPassword(Constant.PASSWORD, Constant.PASSWORD);
+        forgotPasswordPage.enterResetPassword(
+                Account.VALID.getPassword(),
+                Account.VALID.getPassword()
+        );
 
-        Log.info("Verify: Message \"The new password cannot be the same with the current password\" is shown");
+        Log.info("Verify same password error message");
 
-        softAssert.assertEquals(forgotPasswordPage.getMessageResetPasswordError(),"The new password cannot be the same with the current password");
+        softAssert.assertEquals(
+                forgotPasswordPage.getMessageResetPasswordError(),
+                Message.RESET_SAME_PASSWORD.getText()
+        );
 
         softAssert.assertAll();
-
     }
 
-    @Test (description = "TC11: Reset password shows error if the new password and confirm password doesn't match")
-    public void TC11_ResetPasswordShowErrorWhenConfirmPasswordNotMatchNewPassWord(){
-
+    @Test(description = "TC11: Reset password shows error if the new password and confirmation do not match")
+    public void TC11_ResetPasswordShowErrorWhenConfirmPasswordNotMatchNewPassWord() {
         SoftAssert softAssert = new SoftAssert();
 
         String email = registerPage.createActivatedAccount();
 
         Log.step("1. Navigate to QA Railway Login page");
-
         basePage.navigatetoRailway();
-
         basePage.gotoLoginPage();
 
-        Log.step("2. Click on \"Forgot Password page\" link");
-
+        Log.step("2. Click on Forgot Password link");
         loginPage.clickForgotPasswordLink();
 
         Log.step("3. Enter the email address of the activated account");
-        Log.step("4. Click on \"Send Instructions\" button");
-
+        Log.step("4. Click on Send Instructions button");
         forgotPasswordPage.enterEmail(email);
 
-        Log.step("5. Login to the mailbox (the same mailbox when creating account)");
-
+        Log.step("5. Switch to the mailbox");
         emailPage.switchToMailTab();
 
-        Log.step("6. Open email with subject contaning \"Please reset your password\" and the email of the account at step 3");
-
+        Log.step("6. Open the password reset email");
         emailPage.clickmessageResetPassword();
 
-        String expectedToken= emailPage.getEmailResetToken();
+        String expectedToken = emailPage.getEmailResetToken();
 
-        Log.step("7. Click on reset link");
-
+        Log.step("7. Click on the reset link");
         emailPage.clickLinkResetPassword();
 
-        Log.info("reset password token");
+        Log.info("Verify reset password form and token");
 
-        softAssert.assertEquals(forgotPasswordPage.getTitleFormResetPassword(),"Password Change Form");
+        softAssert.assertEquals(
+                forgotPasswordPage.getTitleFormResetPassword(),
+                Message.RESET_FORM_TITLE.getText()
+        );
 
         String actualToken = forgotPasswordPage.getForgotResetResetToken();
 
-        softAssert.assertEquals(actualToken,expectedToken);
+        softAssert.assertEquals(actualToken, expectedToken);
 
-        Log.step("8. Input different input into 2 fields  \"new password\" and \"confirm password\"");
+        Log.step("8. Enter different values into the new password and confirmation fields");
+        forgotPasswordPage.enterResetPassword(
+                Account.VALID.getPassword(),
+                InvalidData.INVALID_PASSWORD.getValue()
+        );
 
-        forgotPasswordPage.enterResetPassword(Constant.PASSWORD, Constant.INVALIDPASSWORD);
+        Log.info("Verify reset password error message");
 
-        Log.info("Verify: Error message \"Could not reset password. Please correct the errors and try again.\" displays above the form.");
+        softAssert.assertEquals(
+                forgotPasswordPage.getMessageResetPasswordError(),
+                Message.RESET_FAILED.getText(),
+                "Reset password error message is incorrect"
+        );
 
-        String actualMessage = forgotPasswordPage.getMessageResetPasswordError();
+        Log.info("Verify password confirmation error message");
 
-        softAssert.assertEquals(actualMessage,"Could not reset password. Please correct the errors and try again.");
-
-        Log.info("VERIFY:Error message \"The password confirmation did not match the new password.\" displays next to the confirm password field.\n");
-
-        softAssert.assertEquals(forgotPasswordPage.getMessageConfirmPasswordError(),"The password confirmation did not match the new password.","The message is incorrect");
+        softAssert.assertEquals(
+                forgotPasswordPage.getMessageConfirmPasswordError(),
+                Message.RESET_CONFIRM_MISMATCH.getText(),
+                "Password confirmation error message is incorrect"
+        );
 
         softAssert.assertAll();
-
     }
-
-
-
 }

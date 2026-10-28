@@ -1,55 +1,62 @@
-
 package Exercise3;
 
-import pageObjects.Railway.*;
-import common.Constant.Constant;
-import testcases.BaseTest;
+import common.Utilities.Log;
+import dataObjects.Account;
+import dataObjects.Message;
+import dataObjects.Station;
+import dataObjects.Ticket;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import dataObjects.Ticket;
-import common.Utilities.Log;
+import pageObjects.Railway.BasePage;
+import pageObjects.Railway.BookTicketPage;
+import pageObjects.Railway.LoginPage;
+import pageObjects.Railway.RegisterPage;
+import testcases.BaseTest;
 
 public class Exercise3 extends BaseTest {
 
     @Test
     public void Exercise3() {
-
         SoftAssert softAssert = new SoftAssert();
 
-        ticket = new Ticket(null, "Phan Thiết", null, 2, null);
+        ticket = new Ticket(
+                null,
+                Station.PHAN_THIET,
+                null,
+                2,
+                null
+        );
 
         BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = new RegisterPage(driver);
         BookTicketPage bookTicketPage = new BookTicketPage(driver);
 
-        String email= registerPage.createActivatedAccount();
+        registerPage.createActivatedAccount();
 
         Log.step("1. Navigate to Railway");
-
         basePage.navigatetoRailway();
 
-        Log.step("2. Login");
-
-        basePage.gotoLoginPage();
-
+        Log.step("2. Login with the newly activated account");
         LoginPage loginPage = basePage.gotoLoginPage();
+        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
 
-        loginPage.login(email, Constant.PASSWORD);
-
+        Log.step("3. Open Book ticket and book 2 tickets to Phan Thiết");
         basePage.gotoBookTicketPage();
-
-        Log.step("Book 2 tickets to PhanThiet");
-
         bookTicketPage.bookTicket(ticket);
 
-        softAssert.assertEquals(bookTicketPage.getSuccessBookTicketMessage(),"Ticket booked successfully!");
+        Log.info("Verify booking success and ticket information");
 
-        softAssert.assertTrue(bookTicketPage.verifyBookedTicket(null, ticket.getArriveStation(), null, ticket.getAmount(), null));
+        softAssert.assertEquals(
+                bookTicketPage.getSuccessBookTicketMessage(),
+                Message.BOOK_SUCCESS.getText(),
+                "Booking success message is incorrect"
+        );
 
-        softAssert.assertEquals(bookTicketPage.getArriveStation(),ticket.getArriveStation());
-        softAssert.assertEquals(bookTicketPage.getAmount(),String.valueOf(ticket.getAmount()));
+        softAssert.assertTrue(
+                bookTicketPage.verifyBookedTicket(ticket),
+                "Booked ticket information is incorrect"
+        );
+
         softAssert.assertAll();
-
-
     }
 }

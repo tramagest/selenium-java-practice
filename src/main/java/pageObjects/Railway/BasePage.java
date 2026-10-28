@@ -12,6 +12,7 @@ import java.util.Set;
 import org.openqa.selenium.WindowType;
 import dataObjects.TabName;
 import dataObjects.Message;
+import dataObjects.Account;
 
 
 public class BasePage {
@@ -108,6 +109,8 @@ public class BasePage {
             return false;
         }
         return find(lblWelcome).getText().trim().equals(Message.WELCOME_USER.format(email));
+
+
     }
 
     public boolean verifyWelcomeMessage(String expectedMessage) {
