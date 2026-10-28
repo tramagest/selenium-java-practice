@@ -13,7 +13,7 @@ public enum Message {
     INVALID_PASSWORD_LENGTH("Invalid password length."),
     INVALID_PID_LENGTH("Invalid ID length."),
 
-    // Login (giữ đúng từng ký tự như code gốc)
+    // Login
     LOGIN_BLANK_USERNAME_ERROR("There was a problem with your login and/or errors exist in your form. "), // TC02: có dấu cách cuối
     LOGIN_FORM_ERROR("There was a problem with your login and/or errors exist in your form."),             // TC03
     LOGIN_WRONG_PASSWORD_ERROR("Invalid username or password. Please try again"),                         // TC04: không có dấu chấm
