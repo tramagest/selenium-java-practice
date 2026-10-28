@@ -1,17 +1,18 @@
-
 package pageObjects.Railway;
 
+import dataObjects.Message;
+import dataObjects.SeatType;
+import dataObjects.Station;
+import dataObjects.TableColumn;
 import dataObjects.Ticket;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-
-
+import java.time.Duration;
 
 public class BookTicketPage extends BasePage {
 
@@ -19,124 +20,87 @@ public class BookTicketPage extends BasePage {
         super(driver);
     }
 
-    private final By ddlArriveStation =
-            By.xpath("//select[@name='ArriveStation']");
-
-    private final By ddlTicketAmount =
-            By.xpath("//select[@name='TicketAmount']");
-
-    private final By ddlDate =
-            By.xpath("//select[@name='Date']");
-
-    private final By ddlDepartStation =
-            By.xpath("//select[@name='DepartStation']");
-
-    private final By ddlSeatType =
-            By.xpath("//select[@name='SeatType']");
-
-    private final By btnBookTicket =
-            By.xpath("//input[@type='submit']");
-
-    private final By ttlsuccessBookTicket =
-            By.xpath("//h1");
+    private final By ddlArriveStation = By.xpath("//select[@name='ArriveStation']");
+    private final By ddlTicketAmount = By.xpath("//select[@name='TicketAmount']");
+    private final By ddlDate = By.xpath("//select[@name='Date']");
+    private final By ddlDepartStation = By.xpath("//select[@name='DepartStation']");
+    private final By ddlSeatType = By.xpath("//select[@name='SeatType']");
+    private final By btnBookTicket = By.xpath("//input[@type='submit']");
+    private final By ttlsuccessBookTicket = By.xpath("//h1");
 
     private static final String TICKET_INFO_XPATH =
             "//table[contains(@class,'MyTable')]//tr[td]"
                     + "/td[count(ancestor::table//th[normalize-space()='%s']/preceding-sibling::th)+1]";
 
-    public String getTicketInfo(String columnName) {
-        return find(By.xpath(String.format(TICKET_INFO_XPATH, columnName))).getText().trim();
+    public String getTicketInfo(TableColumn column) {
+        return find(By.xpath(String.format(TICKET_INFO_XPATH, column.getName()))).getText().trim();
     }
 
     public String getSelectedDepartStation() {
         return new Select(find(ddlDepartStation)).getFirstSelectedOption().getText().trim();
     }
 
-    public boolean verifyDepartStation(String departStation) {
-        return getSelectedDepartStation().equals(departStation);
+    public boolean verifyDepartStation(Station departStation) {
+        return getSelectedDepartStation().equals(departStation.getName());
     }
 
     public String getSelectedArriveStation() {
         return new Select(find(ddlArriveStation)).getFirstSelectedOption().getText().trim();
     }
 
-    public boolean verifyArriveStation(String arriveStation) {
-        return getSelectedArriveStation().equals(arriveStation);
+    public boolean verifyArriveStation(Station arriveStation) {
+        return getSelectedArriveStation().equals(arriveStation.getName());
     }
 
     public String getSelectedSeatType() {
         return new Select(find(ddlSeatType)).getFirstSelectedOption().getText().trim();
     }
 
-    public String getDepartStation() {
-        return getTicketInfo("Depart Station");
-    }
-
-    public String getArriveStation() {
-        return getTicketInfo("Arrive Station");
-    }
-
-    public String getSeatType() {
-        return getTicketInfo("Seat Type");
-    }
-
-    public String getDepartDate() {
-        return getTicketInfo("Depart Date");
-    }
-
-    public String getAmount() {
-        return getTicketInfo("Amount");
-    }
-
+    public String getDepartStation() { return getTicketInfo(TableColumn.DEPART_STATION); }
+    public String getArriveStation() { return getTicketInfo(TableColumn.ARRIVE_STATION); }
+    public String getSeatType()      { return getTicketInfo(TableColumn.SEAT_TYPE); }
+    public String getDepartDate()    { return getTicketInfo(TableColumn.DEPART_DATE); }
+    public String getBookDate()      { return getTicketInfo(TableColumn.BOOK_DATE); }
+    public String getExpiredDate()   { return getTicketInfo(TableColumn.EXPIRED_DATE); }
+    public String getAmount()        { return getTicketInfo(TableColumn.AMOUNT); }
+    public String getTotalPrice()    { return getTicketInfo(TableColumn.TOTAL_PRICE); }
 
     public String getSuccessBookTicketMessage() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.textToBe(
-                        ttlsuccessBookTicket,
-                        "Ticket booked successfully!"
-                ));
-
+                .until(ExpectedConditions.textToBe(ttlsuccessBookTicket, Message.BOOK_SUCCESS.getText()));
         return find(ttlsuccessBookTicket).getText().trim();
     }
 
-    public boolean verifySuccessBookTicketMessage(String message) {
-        return getSuccessBookTicketMessage().equals(message);
+    public boolean verifySuccessBookTicketMessage(Message message) {
+        return getSuccessBookTicketMessage().equals(message.getText());
     }
-
 
     public void selectDate(String date) {
-        Select select = new Select(find(ddlDate));
-        select.selectByVisibleText(date);
+        new Select(find(ddlDate)).selectByVisibleText(date);
     }
 
-    public void selectDepartStation(String departStation) {
-        Select select = new Select(find(ddlDepartStation));
-        select.selectByVisibleText(departStation);
+    public void selectDepartStation(Station station) {
+        new Select(find(ddlDepartStation)).selectByVisibleText(station.getName());
     }
 
-
-    public void selectArriveStation(String arriveStation) {
-        Select select = new Select(find(ddlArriveStation));
-        select.selectByVisibleText(arriveStation);
+    public void selectArriveStation(Station station) {
+        new Select(find(ddlArriveStation)).selectByVisibleText(station.getName());
     }
 
-    public void selectSeatType(String seatType) {
-        Select select = new Select(find(ddlSeatType));
-        select.selectByVisibleText(seatType);
+    public void selectSeatType(SeatType seatType) {
+        new Select(find(ddlSeatType)).selectByVisibleText(seatType.getName());
     }
 
     public void selectTicketAmount(Integer amount) {
-        Select select = new Select(find(ddlTicketAmount));
-        select.selectByVisibleText(String.valueOf(amount));
+        new Select(find(ddlTicketAmount)).selectByVisibleText(String.valueOf(amount));
     }
 
     public void bookTicket(Ticket ticket) {
-
         if (ticket.getDepartDate() != null) {
             selectDate(ticket.getDepartDate());
         }
         if (ticket.getDepartStation() != null
-                && !getSelectedDepartStation().equals(ticket.getDepartStation())) {
+                && !getSelectedDepartStation().equals(ticket.getDepartStationName())) {
             WebElement oldOption = find(ddlArriveStation).findElement(By.tagName("option"));
             selectDepartStation(ticket.getDepartStation());
             new WebDriverWait(driver, Duration.ofSeconds(5))
@@ -154,21 +118,12 @@ public class BookTicketPage extends BasePage {
         click(btnBookTicket);
     }
 
-
-
-    public boolean verifyBookedTicket(String departStation, String arriveStation,
-                                      String seatType, Integer amount, String date) {
-        return (date == null || date.equals(getDepartDate()))
-                && (arriveStation == null || arriveStation.equals(getArriveStation()))
-                && (seatType == null || seatType.equals(getSeatType()))
-                && (amount == null || amount.equals(Integer.valueOf(getAmount())))
-                && (departStation == null || departStation.equals(getDepartStation()));
+    // field nào của ticket null thì bỏ qua, giống logic cũ
+    public boolean verifyBookedTicket(Ticket ticket) {
+        return (ticket.getDepartDate() == null || ticket.getDepartDate().equals(getDepartDate()))
+                && (ticket.getArriveStation() == null || ticket.getArriveStationName().equals(getArriveStation()))
+                && (ticket.getSeatType() == null || ticket.getSeatTypeName().equals(getSeatType()))
+                && (ticket.getAmount() == null || ticket.getAmount().equals(Integer.valueOf(getAmount())))
+                && (ticket.getDepartStation() == null || ticket.getDepartStationName().equals(getDepartStation()));
     }
-
-
-
-
-
-
 }
-

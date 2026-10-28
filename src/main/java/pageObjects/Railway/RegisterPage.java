@@ -7,6 +7,8 @@ import java.time.Duration;
 import java.util.Set;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pageObjects.guerrilamaill.EmailPage;
+import dataObjects.Account;
+import dataObjects.Message;
 
 public class RegisterPage extends BasePage {
 
@@ -82,7 +84,8 @@ public class RegisterPage extends BasePage {
 
 
     public boolean isregisterPageTitleDisplayed() {
-        return find(registerPageTitle).getText().trim().equals("Create account");
+        return find(registerPageTitle).getText().trim()
+                .equals(Message.REGISTER_PAGE_TITLE.getText());
     }
 
     public String getRegisterSuccessTitle() {
@@ -90,7 +93,7 @@ public class RegisterPage extends BasePage {
                 .ignoring(StaleElementReferenceException.class)
                 .until(d -> {
                     String text = d.findElement(registerPageTitle).getText().trim();
-                    return text.contains("Thank you") ? text : null;
+                    return text.contains(Message.REGISTER_SUCCESS_TITLE.getText()) ? text : null;
                 });
     }
 
@@ -112,7 +115,7 @@ public class RegisterPage extends BasePage {
         driver.get(Constant.RAILWAY_URL);
         new HomePage(driver).clickCreateAccountLink();
 
-        register(email, Constant.PASSWORD, Constant.PASSWORD, Constant.PID);
+        register(email, Account.VALID.getPassword(), Account.VALID.getPassword(), Account.VALID.getPid());
 
         emailPage.switchToMailTab();
         emailPage.clickMessageConfirm();
@@ -123,6 +126,5 @@ public class RegisterPage extends BasePage {
 
         return email;
     }
-
 
 }

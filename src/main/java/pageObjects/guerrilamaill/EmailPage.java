@@ -11,6 +11,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
 import org.openqa.selenium.NoSuchWindowException;
 import java.util.Set;
+import dataObjects.Message;
 
 
 public class EmailPage  extends BasePage {
@@ -19,13 +20,16 @@ public class EmailPage  extends BasePage {
         super(driver);
     }
 
+    private final By messageConfirm = By.xpath(String.format(
+            "//tbody[@id='email_list']//td[contains(., '%s')]", Message.EMAIL_CONFIRM_SUBJECT.getText()));
+
+    private final By messageResetPassword = By.xpath(String.format(
+            "//tbody[@id='email_list']//td[contains(., '%s')]", Message.EMAIL_RESET_SUBJECT.getText()));
+
     private final By aliasCheckbox = By.id("use-alias");
 
-    private final By messageConfirm = By.xpath("//tbody[@id='email_list']//td[contains(., 'Please confirm your account')]");
-
-    private final By messageResetPassword = By.xpath("//tbody[@id='email_list']//td[contains(., 'Please reset your password')]");
-
     private final By emailWidget = By.id("email-widget");
+
     private final By lnkConfirmMail = By.xpath("//a[contains(@href,'saferailway')]");
 
     private final By txtResetToken = By.xpath("//div[@id='display_email']//div[@class='email_body']");

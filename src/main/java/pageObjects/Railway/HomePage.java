@@ -1,8 +1,8 @@
 package pageObjects.Railway;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.By;
 
+import dataObjects.Message;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 public class HomePage extends BasePage {
 
@@ -11,20 +11,18 @@ public class HomePage extends BasePage {
     }
 
     private final By homePageTitle = By.xpath("//*[@id='content']/h1");
-
-
     private final By linkCreateAccount = By.xpath("//*[@id=\"content\"]/div/a");
 
     public boolean isHomePageTitleDisplayed() {
-        return find(homePageTitle ).getText().trim().equals("Welcome to Safe Railway");
+        return find(homePageTitle).getText().trim().equals(Message.HOME_PAGE_TITLE.getText());
     }
 
     public void clickCreateAccountLink() {
-
         click(linkCreateAccount);
     }
 
     public boolean isCreateAccountLinkDisplayed() {
-        return find(linkCreateAccount).getText().trim().equals("create an account");
+        return find(linkCreateAccount).getText().trim()
+                .equals(Message.HOME_CREATE_ACCOUNT_LINK.getText());
     }
 }

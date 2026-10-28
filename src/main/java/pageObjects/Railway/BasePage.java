@@ -10,6 +10,8 @@ import org.openqa.selenium.WebDriver;
 import java.time.Duration;
 import java.util.Set;
 import org.openqa.selenium.WindowType;
+import dataObjects.TabName;
+import dataObjects.Message;
 
 
 public class BasePage {
@@ -40,9 +42,8 @@ public class BasePage {
     }
 
     // ClickTab
-    protected void clickTab(String tabName) {
-        By tab = By.xpath(String.format(TAB_XPATH, tabName));
-        click(tab);
+    protected void clickTab(TabName tab) {
+        click(By.xpath(String.format(TAB_XPATH, tab.getName())));
     }
 
     protected void switchToNewTab(Set<String> oldTabs) {
@@ -58,55 +59,55 @@ public class BasePage {
     }
 
     public void logout() {
-        clickTab("Log out");
+        clickTab(TabName.LOG_OUT);
     }
 
 
     public boolean isLoggedOut() {
-        return driver.findElements(By.xpath("//*[@id='menu']//li[a[span[text()='Log out']]]/a")).isEmpty();
+        return driver.findElements(By.xpath(String.format(TAB_XPATH, TabName.LOG_OUT.getName()))).isEmpty();
     }
 
 
     public FAQPage gotoFAQPage() {
-        clickTab("FAQ");
+        clickTab(TabName.FAQ);
         return new FAQPage(driver);
     }
 
     public LoginPage gotoLoginPage() {
-        clickTab("Login");
+        clickTab(TabName.LOGIN);
         return new LoginPage(driver);
     }
 
     public TimetablePage gotoTimetablePage() {
-        clickTab("Timetable");
+        clickTab(TabName.TIMETABLE);
         return new TimetablePage(driver);
     }
 
     public BookTicketPage gotoBookTicketPage() {
-        clickTab("Book ticket");
+        clickTab(TabName.BOOK_TICKET);
         return new BookTicketPage(driver);
     }
 
     public MyTicketPage gotoMyTicketPage() {
-        clickTab("My ticket");
+        clickTab(TabName.MY_TICKET);
         return new MyTicketPage(driver);
     }
-    public RegisterPage gotoRegisterPage(){
-        clickTab("Register" );
+
+    public RegisterPage gotoRegisterPage() {
+        clickTab(TabName.REGISTER);
         return new RegisterPage(driver);
     }
+
 
     public String getWelcomeMessage() {
         return find(lblWelcome).getText();
     }
 
-    public boolean isWelcomeUserMessageDisplayed() {
+    public boolean isWelcomeUserMessageDisplayed(String email) {
         if (driver.findElements(lblWelcome).isEmpty()) {
             return false;
         }
-
-        return find(lblWelcome).getText().trim()
-                .equals("Welcome " + Constant.USERNAME);
+        return find(lblWelcome).getText().trim().equals(Message.WELCOME_USER.format(email));
     }
 
     public boolean verifyWelcomeMessage(String expectedMessage) {
@@ -133,5 +134,9 @@ public class BasePage {
     public String getCurrentTab() {
         return driver.getWindowHandle();
     }
+
+
+
+
 
 }

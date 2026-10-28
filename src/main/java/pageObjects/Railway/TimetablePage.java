@@ -1,64 +1,57 @@
 package pageObjects.Railway;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebDriver;
 
-public class TimetablePage extends BasePage{
+import dataObjects.SeatType;
+import dataObjects.Station;
+import dataObjects.TableColumn;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class TimetablePage extends BasePage {
 
     public TimetablePage(WebDriver driver) {
         super(driver);
     }
 
+    private static final String BOOK_TICKET_BY_SEAT_XPATH =
+            "//tr[td[normalize-space()='%s']]//a[normalize-space()='%s']";
 
-    private static final String COL_DEPART = "Depart Station";
-    private static final String COL_ARRIVE = "Arrive Station";
-    private static final String COL_CHECK_PRICE = "Check Price";
-    private static final String COL_BOOK_TICKET = "Book ticket";
-    private static final String BOOK_TICKET_BY_SEAT_XPATH = "//tr[td[normalize-space()='%s']]//a[normalize-space()='Book ticket']";
-
-
-    private String colIndex(String headerName) {
-        return "count(//table[contains(@class,'MyTable')]//th[normalize-space()='" + headerName
+    private String colIndex(TableColumn column) {
+        return "count(//table[contains(@class,'MyTable')]//th[normalize-space()='" + column.getName()
                 + "']/preceding-sibling::th)+1";
     }
 
-
-    private String cell(String headerName) {
-        return "td[" + colIndex(headerName) + "]";
+    private String cell(TableColumn column) {
+        return "td[" + colIndex(column) + "]";
     }
 
-
-    private By linkLocator(String departStation, String arriveStation, String actionColumn) {
+    private By linkLocator(Station depart, Station arrive, TableColumn actionColumn) {
         String xpath = "//table[contains(@class,'MyTable')]//tbody/tr["
-                + cell(COL_DEPART) + "[normalize-space()='" + departStation + "'] and "
-                + cell(COL_ARRIVE) + "[normalize-space()='" + arriveStation + "']"
+                + cell(TableColumn.DEPART_STATION) + "[normalize-space()='" + depart.getName() + "'] and "
+                + cell(TableColumn.ARRIVE_STATION) + "[normalize-space()='" + arrive.getName() + "']"
                 + "]/" + cell(actionColumn) + "/a";
         return By.xpath(xpath);
     }
 
-    public WebElement getCheckPriceLink(String departStation, String arriveStation) {
-        return find(linkLocator(departStation, arriveStation, COL_CHECK_PRICE));
+    public WebElement getCheckPriceLink(Station depart, Station arrive) {
+        return find(linkLocator(depart, arrive, TableColumn.CHECK_PRICE));
     }
 
-    public WebElement getBookTicketLink(String departStation, String arriveStation) {
-        return find(linkLocator(departStation, arriveStation, COL_BOOK_TICKET));
+    public WebElement getBookTicketLink(Station depart, Station arrive) {
+        return find(linkLocator(depart, arrive, TableColumn.BOOK_TICKET));
     }
 
-    public void clickCheckPrice(String departStation, String arriveStation) {
-        click(linkLocator(departStation, arriveStation, COL_CHECK_PRICE));
+    public void clickCheckPrice(Station depart, Station arrive) {
+        click(linkLocator(depart, arrive, TableColumn.CHECK_PRICE));
     }
 
-    public BookTicketPage clickBookTicket(String departStation, String arriveStation) {
-        click(linkLocator(departStation, arriveStation, COL_BOOK_TICKET));
+    public BookTicketPage clickBookTicket(Station depart, Station arrive) {
+        click(linkLocator(depart, arrive, TableColumn.BOOK_TICKET));
         return new BookTicketPage(driver);
     }
 
-
-    private By bookTicketBySeatLocator(String seatType) {
-        return By.xpath(String.format(BOOK_TICKET_BY_SEAT_XPATH, seatType));
-    }
-
-    public void clickBookTicketBySeat(String seatType) {
-        click(bookTicketBySeatLocator(seatType));
+    public void clickBookTicketBySeat(SeatType seatType) {
+        click(By.xpath(String.format(BOOK_TICKET_BY_SEAT_XPATH,
+                seatType.getName(), TableColumn.BOOK_TICKET.getName())));
     }
 }

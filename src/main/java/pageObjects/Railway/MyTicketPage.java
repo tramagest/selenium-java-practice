@@ -1,13 +1,15 @@
 package pageObjects.Railway;
 
+import dataObjects.TableColumn;
+import dataObjects.Ticket;
+import dataObjects.TicketOperation;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 import java.util.Comparator;
-import dataObjects.Ticket;
-
 
 public class MyTicketPage extends BasePage {
 
@@ -17,33 +19,32 @@ public class MyTicketPage extends BasePage {
         super(driver);
     }
 
-
-    private String columnCondition(String columnName, String value) {
+    private String columnCondition(TableColumn column, String value) {
         if (value == null) {
             return "";
         }
         return String.format(
                 " and normalize-space(td[count(%s//th[normalize-space()='%s']/preceding-sibling::th)+1])='%s'",
-                TABLE, columnName, value);
+                TABLE, column.getName(), value);
     }
 
-
-
     private By cancelButtonOfRow(Ticket ticket) {
-        String xpath = TABLE + "//tr[.//input[@value='Cancel']"
-                + columnCondition("Depart Station", ticket.getDepartStation())
-                + columnCondition("Arrive Station", ticket.getArriveStation())
-                + columnCondition("Seat Type", ticket.getSeatType())
-                + columnCondition("Depart Date", ticket.getDepartDate())
-                + columnCondition("Amount", String.valueOf(ticket.getAmount()))
-                + "]//input[@value='Cancel']";
+        String amount = ticket.getAmount() == null ? null : String.valueOf(ticket.getAmount());
+        String cancel = TicketOperation.CANCEL.getName();
+        String xpath = TABLE + "//tr[.//input[@value='" + cancel + "']"
+                + columnCondition(TableColumn.DEPART_STATION, ticket.getDepartStationName())
+                + columnCondition(TableColumn.ARRIVE_STATION, ticket.getArriveStationName())
+                + columnCondition(TableColumn.SEAT_TYPE, ticket.getSeatTypeName())
+                + columnCondition(TableColumn.DEPART_DATE, ticket.getDepartDate())
+                + columnCondition(TableColumn.AMOUNT, amount)
+                + "]//input[@value='" + cancel + "']";
         return By.xpath(xpath);
     }
 
     private By cancelButtonOf(String ticketId) {
-        return By.xpath("//input[@value='Cancel' and contains(@onclick,'DeleteTicket(" + ticketId + ")')]");
+        return By.xpath("//input[@value='" + TicketOperation.CANCEL.getName()
+                + "' and contains(@onclick,'DeleteTicket(" + ticketId + ")')]");
     }
-
 
     private String getTicketId(Ticket ticket) {
         By row = cancelButtonOfRow(ticket);
@@ -64,20 +65,16 @@ public class MyTicketPage extends BasePage {
                 .until(ExpectedConditions.invisibilityOfElementLocated(cancelButtonOf(ticketId)));
     }
 
-
     public String cancelTicket(Ticket ticket) {
-        if (ticket==null) { return null;}
-        BasePage basePage = new BasePage(driver);
-        basePage.gotoMyTicketPage();
-        if (driver.findElements(
-                cancelButtonOfRow(ticket)).isEmpty()) {
+        if (ticket == null) { return null; }
+        new BasePage(driver).gotoMyTicketPage();
+        if (driver.findElements(cancelButtonOfRow(ticket)).isEmpty()) {
             return null;
         }
         String ticketId = getTicketId(ticket);
         cancelTicketById(ticketId);
         return ticketId;
     }
-
 
     public boolean verifyTicketExist(String ticketId) {
         return !driver.findElements(cancelButtonOf(ticketId)).isEmpty();
