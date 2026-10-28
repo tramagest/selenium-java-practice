@@ -51,11 +51,18 @@ public class CancelTicketTest extends BaseTest {
 
         String ticketId = myTicketPage.cancelTicket(ticket);
 
-        Log.info("Verify that the canceled ticket is no longer displayed");
+        Log.verify(
+                softAssert,
+                "Ticket found and canceled",
+                true,
+                ticketId != null
+        );
 
-        softAssert.assertFalse(
-                myTicketPage.verifyTicketExist(ticketId),
-                "Ticket was not canceled"
+        Log.verify(
+                softAssert,
+                "Canceled ticket is displayed",
+                false,
+                myTicketPage.verifyTicketExist(ticketId)
         );
 
         softAssert.assertAll();

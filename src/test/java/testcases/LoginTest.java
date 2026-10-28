@@ -28,6 +28,9 @@ public class LoginTest extends BaseTest {
 
     @Test(description = "TC01: User can log into Railway with valid username and password")
     public void TC01_UserCanLoginWithValidAccount() {
+
+        SoftAssert softAssert = new SoftAssert();
+
         Log.step("1. Navigate to QA Railway Website");
         basePage.navigatetoRailway();
 
@@ -38,18 +41,14 @@ public class LoginTest extends BaseTest {
         Log.step("4. Click on Login button");
         loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
 
-        Log.info("User is logged into Railway. Welcome user message is displayed.");
-
-        Assert.assertTrue(
-                Log.verify(
-                        "Welcome message",
-                        true,
-                        basePage.verifyWelcomeMessage(
-                                Message.WELCOME_USER.format(Account.VALID.getEmail())
-                        )
-                ),
-                "Welcome message is not displayed. User might not be logged in."
+        Log.verify(
+                softAssert,
+                "Welcome message",
+                Message.WELCOME_USER.format(Account.VALID.getEmail()),
+                basePage.getWelcomeMessage()
         );
+
+        softAssert.assertAll();
     }
 
     @Test(description = "TC02: User cannot login with blank Username textbox")
@@ -66,17 +65,18 @@ public class LoginTest extends BaseTest {
         Log.step("4. Click on Login button");
         loginPage.login(InvalidData.EMPTY.getValue(), Account.VALID.getPassword());
 
-        Log.info("Verify blank username error message");
-
-        softAssert.assertEquals(
-                loginPage.getLoginErrorMessage(),
+        Log.verify(
+                softAssert,
+                "Blank username login error message",
                 Message.LOGIN_BLANK_USERNAME_ERROR.getText(),
-                "Message is displayed incorrectly"
+                loginPage.getLoginErrorMessage()
         );
 
-        Assert.assertFalse(
-                basePage.isWelcomeUserMessageDisplayed(Account.VALID.getEmail()),
-                "Welcome message is displayed. User might be logged in."
+        Log.verify(
+                softAssert,
+                "Welcome message displayed",
+                false,
+                basePage.isWelcomeUserMessageDisplayed(Account.VALID.getEmail())
         );
 
         softAssert.assertAll();
@@ -99,13 +99,10 @@ public class LoginTest extends BaseTest {
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
-        Log.info("Verify invalid login form error message");
-
-        softAssert.assertEquals(
-                loginPage.getLoginErrorMessage(),
+        Log.verify(softAssert,
+                "Invalid password login error message",
                 Message.LOGIN_FORM_ERROR.getText(),
-                "Message is displayed incorrectly"
-        );
+                loginPage.getLoginErrorMessage());
 
         softAssert.assertAll();
     }
@@ -127,12 +124,11 @@ public class LoginTest extends BaseTest {
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
-        Log.info("Verify invalid username or password message");
-
-        softAssert.assertEquals(
-                loginPage.getLoginErrorMessage(),
+        Log.verify(
+                softAssert,
+                "Wrong password login error message",
                 Message.LOGIN_WRONG_PASSWORD_ERROR.getText(),
-                "Message is displayed incorrectly"
+                loginPage.getLoginErrorMessage()
         );
 
         Log.step("5. Repeat the login attempt three more times");
@@ -143,12 +139,11 @@ public class LoginTest extends BaseTest {
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
-        Log.info("Verify login attempts warning");
-
-        softAssert.assertEquals(
-                loginPage.getLoginErrorMessage(),
+        Log.verify(
+                softAssert,
+                "Login attempts warning",
                 Message.LOGIN_ATTEMPTS_WARNING.getText(),
-                "Message is displayed incorrectly"
+                loginPage.getLoginErrorMessage()
         );
 
         softAssert.assertAll();
@@ -183,12 +178,11 @@ public class LoginTest extends BaseTest {
         Log.step("4. Click on Login button");
         loginPage.login(email, Account.VALID.getPassword());
 
-        Log.info("Verify account not activated error message");
-
-        softAssert.assertEquals(
-                loginPage.getLoginErrorMessage(),
+        Log.verify(
+                softAssert,
+                "Login error message for an unactivated account",
                 Message.LOGIN_NOT_ACTIVATED_ERROR.getText(),
-                "Message is displayed incorrectly"
+                loginPage.getLoginErrorMessage()
         );
 
         softAssert.assertAll();

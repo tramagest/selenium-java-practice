@@ -1,14 +1,11 @@
 package testcases;
 
+import common.Utilities.DriverManager;
+import dataObjects.Ticket;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import pageObjects.Railway.MyTicketPage;
-import dataObjects.Ticket;
-
-
-
 
 public class BaseTest {
 
@@ -21,28 +18,22 @@ public class BaseTest {
 
     @BeforeMethod
     public void setUp() {
-
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        DriverManager.setDriver(driver);
 
+        driver.manage().window().maximize();
     }
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
-        if (driver == null) {
-            return;
-        }
         try {
-            new MyTicketPage(driver).cancelTicket(ticket);
+            if (driver != null) {
+                driver.quit();
+            }
         } finally {
+            DriverManager.unload();
             ticket = null;
-            driver.quit();
+            driver = null;
         }
     }
-
-
 }
-
-
-
-

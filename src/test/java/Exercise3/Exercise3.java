@@ -31,25 +31,25 @@ public class Exercise3 extends BaseTest {
         RegisterPage registerPage = new RegisterPage(driver);
         BookTicketPage bookTicketPage = new BookTicketPage(driver);
 
-        registerPage.createActivatedAccount();
+        String email=registerPage.createActivatedAccount();
 
         Log.step("1. Navigate to Railway");
         basePage.navigatetoRailway();
 
         Log.step("2. Login with the newly activated account");
         LoginPage loginPage = basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(email, Account.VALID.getPassword());
 
         Log.step("3. Open Book ticket and book 2 tickets to Phan Thiết");
         basePage.gotoBookTicketPage();
         bookTicketPage.bookTicket(ticket);
 
-        Log.info("Verify booking success and ticket information");
 
-        softAssert.assertEquals(
-                bookTicketPage.getSuccessBookTicketMessage(),
+        Log.verify(
+                softAssert,
+                "Booking success message",
                 Message.BOOK_SUCCESS.getText(),
-                "Booking success message is incorrect"
+                bookTicketPage.getSuccessBookTicketMessage()
         );
 
         softAssert.assertTrue(

@@ -55,16 +55,22 @@ public class ResetPasswordTest extends BaseTest {
         Log.step("7. Click on the reset link");
         emailPage.clickLinkResetPassword();
 
-        Log.info("Verify reset password form and token");
 
-        softAssert.assertEquals(
-                forgotPasswordPage.getTitleFormResetPassword(),
-                Message.RESET_FORM_TITLE.getText()
+        Log.verify(
+                softAssert,
+                "Password Change Form title",
+                Message.RESET_FORM_TITLE.getText(),
+                forgotPasswordPage.getTitleFormResetPassword()
         );
 
         String actualToken = forgotPasswordPage.getForgotResetResetToken();
 
-        softAssert.assertEquals(actualToken, expectedToken);
+        Log.verify(
+                softAssert,
+                "Reset password token",
+                expectedToken,
+                actualToken
+        );
 
         Log.step("8. Enter the current password into both fields");
         Log.step("9. Click Reset Password");
@@ -74,11 +80,13 @@ public class ResetPasswordTest extends BaseTest {
                 Account.VALID.getPassword()
         );
 
-        Log.info("Verify same password error message");
 
-        softAssert.assertEquals(
-                forgotPasswordPage.getMessageResetPasswordError(),
-                Message.RESET_SAME_PASSWORD.getText()
+
+        Log.verify(
+                softAssert,
+                "Error message when reusing the current password",
+                Message.RESET_SAME_PASSWORD.getText(),
+                forgotPasswordPage.getMessageResetPasswordError()
         );
 
         softAssert.assertAll();
@@ -112,16 +120,23 @@ public class ResetPasswordTest extends BaseTest {
         Log.step("7. Click on the reset link");
         emailPage.clickLinkResetPassword();
 
-        Log.info("Verify reset password form and token");
 
-        softAssert.assertEquals(
-                forgotPasswordPage.getTitleFormResetPassword(),
-                Message.RESET_FORM_TITLE.getText()
+
+        Log.verify(
+                softAssert,
+                "Password Change Form title",
+                Message.RESET_FORM_TITLE.getText(),
+                forgotPasswordPage.getTitleFormResetPassword()
         );
 
         String actualToken = forgotPasswordPage.getForgotResetResetToken();
 
-        softAssert.assertEquals(actualToken, expectedToken);
+        Log.verify(
+                softAssert,
+                "Reset password token",
+                expectedToken,
+                actualToken
+        );
 
         Log.step("8. Enter different values into the new password and confirmation fields");
         forgotPasswordPage.enterResetPassword(
@@ -129,20 +144,22 @@ public class ResetPasswordTest extends BaseTest {
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
-        Log.info("Verify reset password error message");
 
-        softAssert.assertEquals(
-                forgotPasswordPage.getMessageResetPasswordError(),
+
+        Log.verify(
+                softAssert,
+                "Password reset error message",
                 Message.RESET_FAILED.getText(),
-                "Reset password error message is incorrect"
+                forgotPasswordPage.getMessageResetPasswordError()
         );
 
-        Log.info("Verify password confirmation error message");
 
-        softAssert.assertEquals(
-                forgotPasswordPage.getMessageConfirmPasswordError(),
+
+        Log.verify(
+                softAssert,
+                "Password confirmation error message",
                 Message.RESET_CONFIRM_MISMATCH.getText(),
-                "Password confirmation error message is incorrect"
+                forgotPasswordPage.getMessageConfirmPasswordError()
         );
 
         softAssert.assertAll();

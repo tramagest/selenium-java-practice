@@ -2,7 +2,6 @@ package pageObjects.Railway;
 
 import dataObjects.TableColumn;
 import dataObjects.Ticket;
-import dataObjects.TicketOperation;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -30,19 +29,19 @@ public class MyTicketPage extends BasePage {
 
     private By cancelButtonOfRow(Ticket ticket) {
         String amount = ticket.getAmount() == null ? null : String.valueOf(ticket.getAmount());
-        String cancel = TicketOperation.CANCEL.getName();
-        String xpath = TABLE + "//tr[.//input[@value='" + cancel + "']"
+
+        String xpath = TABLE + "//tr[.//input[@value='" + "Cancel" + "']"
                 + columnCondition(TableColumn.DEPART_STATION, ticket.getDepartStationName())
                 + columnCondition(TableColumn.ARRIVE_STATION, ticket.getArriveStationName())
                 + columnCondition(TableColumn.SEAT_TYPE, ticket.getSeatTypeName())
                 + columnCondition(TableColumn.DEPART_DATE, ticket.getDepartDate())
                 + columnCondition(TableColumn.AMOUNT, amount)
-                + "]//input[@value='" + cancel + "']";
+                + "]//input[@value='" + "Cancel" + "']";
         return By.xpath(xpath);
     }
 
     private By cancelButtonOf(String ticketId) {
-        return By.xpath("//input[@value='" + TicketOperation.CANCEL.getName()
+        return By.xpath("//input[@value='" + "Cancel"
                 + "' and contains(@onclick,'DeleteTicket(" + ticketId + ")')]");
     }
 

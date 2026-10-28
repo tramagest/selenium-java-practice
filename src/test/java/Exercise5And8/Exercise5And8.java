@@ -13,6 +13,7 @@ import pageObjects.Railway.BasePage;
 import pageObjects.Railway.BookTicketPage;
 import pageObjects.Railway.LoginPage;
 import pageObjects.Railway.TimetablePage;
+import pageObjects.Railway.RegisterPage;
 import testcases.BaseTest;
 
 public class Exercise5And8 extends BaseTest {
@@ -32,13 +33,16 @@ public class Exercise5And8 extends BaseTest {
         BasePage basePage = new BasePage(driver);
         TimetablePage timetablePage = new TimetablePage(driver);
         BookTicketPage bookTicketPage = new BookTicketPage(driver);
+        RegisterPage registerPage = new RegisterPage(driver);
+
+        String email=registerPage.createActivatedAccount();
 
         Log.step("1. Navigate to Railway");
         basePage.navigatetoRailway();
 
         Log.step("2. Login with a valid account");
         LoginPage loginPage = basePage.gotoLoginPage();
-        loginPage.login(Account.VALID.getEmail(), Account.VALID.getPassword());
+        loginPage.login(email, Account.VALID.getPassword());
 
         Log.step("3. Click on Timetable tab");
         basePage.gotoTimetablePage();
@@ -51,14 +55,18 @@ public class Exercise5And8 extends BaseTest {
 
         Log.info("Verify booked ticket information");
 
-        softAssert.assertTrue(
-                bookTicketPage.verifySuccessBookTicketMessage(Message.BOOK_SUCCESS),
-                "Booking success message is incorrect"
+        Log.verify(
+                softAssert,
+                "Booking success message",
+                Message.BOOK_SUCCESS.getText(),
+                bookTicketPage.getSuccessBookTicketMessage()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyBookedTicket(ticket),
-                "Booked ticket information is incorrect"
+        Log.verify(
+                softAssert,
+                "Verify booked ticket information",
+                true,
+                bookTicketPage.verifyBookedTicket(ticket)
         );
 
         softAssert.assertAll();

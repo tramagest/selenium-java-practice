@@ -1,5 +1,6 @@
 package pageObjects.Railway;
 
+import common.Utilities.Log;
 import dataObjects.Message;
 import dataObjects.SeatType;
 import dataObjects.Station;
@@ -120,10 +121,35 @@ public class BookTicketPage extends BasePage {
 
 
     public boolean verifyBookedTicket(Ticket ticket) {
-        return (ticket.getDepartDate() == null || ticket.getDepartDate().equals(getDepartDate()))
-                && (ticket.getArriveStation() == null || ticket.getArriveStationName().equals(getArriveStation()))
-                && (ticket.getSeatType() == null || ticket.getSeatTypeName().equals(getSeatType()))
-                && (ticket.getAmount() == null || ticket.getAmount().equals(Integer.valueOf(getAmount())))
-                && (ticket.getDepartStation() == null || ticket.getDepartStationName().equals(getDepartStation()));
+        String expected = "";
+        String actual = "";
+
+        if (ticket.getDepartDate() != null) {
+            expected += "Depart date: " + ticket.getDepartDate() + " | ";
+            actual += "Depart date: " + getDepartDate() + " | ";
+        }
+
+        if (ticket.getDepartStationName() != null) {
+            expected += "Depart station: " + ticket.getDepartStationName() + " | ";
+            actual += "Depart station: " + getDepartStation() + " | ";
+        }
+
+        if (ticket.getArriveStationName() != null) {
+            expected += "Arrive station: " + ticket.getArriveStationName() + " | ";
+            actual += "Arrive station: " + getArriveStation() + " | ";
+        }
+
+        if (ticket.getSeatTypeName() != null) {
+            expected += "Seat type: " + ticket.getSeatTypeName() + " | ";
+            actual += "Seat type: " + getSeatType() + " | ";
+        }
+
+        expected += "Amount: " + ticket.getAmount();
+        actual += "Amount: " + getAmount();
+
+        Log.info("Expected: " + expected);
+        Log.info("Actual: " + actual);
+
+        return expected.equals(actual);
     }
 }

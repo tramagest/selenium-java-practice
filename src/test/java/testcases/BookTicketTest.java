@@ -8,14 +8,11 @@ import dataObjects.SeatType;
 import dataObjects.Station;
 import dataObjects.Ticket;
 import dataObjects.TicketPrice;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import pageObjects.Railway.BasePage;
-import pageObjects.Railway.BookTicketPage;
-import pageObjects.Railway.LoginPage;
-import pageObjects.Railway.TicketPricePage;
-import pageObjects.Railway.TimetablePage;
+import pageObjects.Railway.*;
 
 public class BookTicketTest extends BaseTest {
 
@@ -24,6 +21,7 @@ public class BookTicketTest extends BaseTest {
     protected TimetablePage timetablePage;
     protected BookTicketPage bookTicketPage;
     protected TicketPricePage ticketPricePage;
+    private Ticket ticket;
 
     @BeforeMethod
     public void initPageObjects() {
@@ -59,12 +57,13 @@ public class BookTicketTest extends BaseTest {
         Log.step("4. Select date, stations, seat type and ticket amount");
         bookTicketPage.bookTicket(ticket);
 
-        Log.info("Verify booked ticket information");
 
-        softAssert.assertEquals(
-                bookTicketPage.getSuccessBookTicketMessage(),
+
+        Log.verify(
+                softAssert,
+                "Booking success message",
                 Message.BOOK_SUCCESS.getText(),
-                "Booking success message is incorrect"
+                bookTicketPage.getSuccessBookTicketMessage()
         );
 
         softAssert.assertTrue(
@@ -100,12 +99,13 @@ public class BookTicketTest extends BaseTest {
         Log.step("4. Select the departure date, route, seat type and amount 5");
         bookTicketPage.bookTicket(ticket);
 
-        Log.info("Verify booked ticket information");
 
-        softAssert.assertEquals(
-                bookTicketPage.getSuccessBookTicketMessage(),
+
+        Log.verify(
+                softAssert,
+                "Booking success message",
                 Message.BOOK_SUCCESS.getText(),
-                "Booking success message is incorrect"
+                bookTicketPage.getSuccessBookTicketMessage()
         );
 
         softAssert.assertTrue(
@@ -133,39 +133,63 @@ public class BookTicketTest extends BaseTest {
         Log.step("4. Click Check Price for the route from Đà Nẵng to Sài Gòn");
         timetablePage.clickCheckPrice(Station.DA_NANG, Station.SAI_GON);
 
-        Log.info("Verify Ticket Price page and prices");
 
-        softAssert.assertTrue(
-                ticketPricePage.isTicketPricePageDisplayed(),
-                "Ticket Price page is not loaded"
+
+        Log.verify(
+                softAssert,
+                "Ticket Price page displayed",
+                true,
+                ticketPricePage.isTicketPricePageDisplayed()
         );
 
-        softAssert.assertEquals(
-                ticketPricePage.getTicketPriceTableTitle(),
-                Message.TICKET_PRICE_TABLE_TITLE.format(
-                        Station.DA_NANG.getName(),
-                        Station.SAI_GON.getName()
-                ),
-                "Ticket price title is incorrect"
+        Log.verify(
+                softAssert,
+                "Ticket price table title",
+                Message.TICKET_PRICE_TABLE_TITLE.format(Station.DA_NANG.getName(), Station.SAI_GON.getName()),
+                ticketPricePage.getTicketPriceTableTitle()
         );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.HS),
-                "Incorrect price for Hard seat");
+        Log.verify(
+                softAssert,
+                "Hard seat price",
+                String.valueOf(TicketPrice.HS.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.HS.getSeatType())
+        );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.SS),
-                "Incorrect price for Soft seat");
+        Log.verify(
+                softAssert,
+                "Soft seat price",
+                String.valueOf(TicketPrice.SS.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.SS.getSeatType())
+        );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.SSC),
-                "Incorrect price for Soft seat with air conditioner");
+        Log.verify(
+                softAssert,
+                "Soft seat with air conditioner price",
+                String.valueOf(TicketPrice.SSC.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.SSC.getSeatType())
+        );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.HB),
-                "Incorrect price for Hard bed");
+        Log.verify(
+                softAssert,
+                "Hard bed price",
+                String.valueOf(TicketPrice.HB.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.HB.getSeatType())
+        );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.SB),
-                "Incorrect price for Soft bed");
+        Log.verify(
+                softAssert,
+                "Soft bed price",
+                String.valueOf(TicketPrice.SB.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.SB.getSeatType())
+        );
 
-        softAssert.assertTrue(ticketPricePage.verifyPrice(TicketPrice.SBC),
-                "Incorrect price for Soft bed with air conditioner");
+        Log.verify(
+                softAssert,
+                "Soft bed with air conditioner price",
+                String.valueOf(TicketPrice.SBC.getPrice()),
+                ticketPricePage.getPrice(TicketPrice.SBC.getSeatType())
+        );
 
         softAssert.assertAll();
     }
@@ -198,16 +222,20 @@ public class BookTicketTest extends BaseTest {
                 ticket.getArriveStation()
         );
 
-        Log.info("Verify departure and arrival stations");
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyDepartStation(ticket.getDepartStation()),
-                "Departure station is incorrect"
+
+        Log.verify(
+                softAssert,
+                "Departure station on booking form",
+                ticket.getDepartStationName(),
+                bookTicketPage.getSelectedDepartStation()
         );
 
-        softAssert.assertTrue(
-                bookTicketPage.verifyArriveStation(ticket.getArriveStation()),
-                "Arrival station is incorrect"
+        Log.verify(
+                softAssert,
+                "Arrival station on booking form",
+                ticket.getArriveStationName(),
+                bookTicketPage.getSelectedArriveStation()
         );
 
         String selectedSeatType = bookTicketPage.getSelectedSeatType();
@@ -215,12 +243,13 @@ public class BookTicketTest extends BaseTest {
         Log.step("5. Select the departure date and ticket amount 2");
         bookTicketPage.bookTicket(ticket);
 
-        Log.info("Verify booked ticket information");
 
-        softAssert.assertEquals(
-                bookTicketPage.getSuccessBookTicketMessage(),
+
+        Log.verify(
+                softAssert,
+                "Booking success message",
                 Message.BOOK_SUCCESS.getText(),
-                "Booking success message is incorrect"
+                bookTicketPage.getSuccessBookTicketMessage()
         );
 
         softAssert.assertTrue(
@@ -228,12 +257,21 @@ public class BookTicketTest extends BaseTest {
                 "Booked ticket information is incorrect"
         );
 
-        softAssert.assertEquals(
-                bookTicketPage.getSeatType(),
+        Log.verify(
+                softAssert,
+                "Seat type remains unchanged",
                 selectedSeatType,
-                "Seat type changed unexpectedly"
+                bookTicketPage.getSeatType()
         );
 
         softAssert.assertAll();
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void cleanUpTicket() {
+        if (ticket != null && driver != null) {
+            new MyTicketPage(driver).cancelTicket(ticket);
+        }
+        ticket = null;
     }
 }

@@ -1,6 +1,7 @@
 package common.Utilities;
 
 import com.aventstack.extentreports.ExtentTest;
+import org.testng.asserts.SoftAssert;
 
 import java.util.Objects;
 
@@ -41,5 +42,12 @@ public class Log {
         if (current.get() != null) {
             current.get().info(message);
         }
+    }
+
+
+
+    public static void verify(SoftAssert soft, String what, Object expected, Object actual) {
+        verify(what, expected, actual);            // ghi dòng pass/fail kèm expected/actual vào Extent
+        soft.assertEquals(actual, expected, what); // message lỗi cũng có expected/actual
     }
 }

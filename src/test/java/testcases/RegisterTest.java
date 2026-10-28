@@ -50,18 +50,18 @@ public class RegisterTest extends BaseTest {
                 Account.VALID.getPid()
         );
 
-        Log.info("Verify that the email already in use message is displayed");
-
-        softAssert.assertTrue(
-                registerPage.verifyRegisterErrorMessage(
-                        Message.REGISTER_EMAIL_IN_USE.getText()
-                ),
-                "Email already in use message is incorrect"
+        Log.verify(
+                softAssert,
+                "Email already in use error message",
+                Message.REGISTER_EMAIL_IN_USE.getText() ,
+                registerPage.getRegisterErrorMessage()
         );
 
-        softAssert.assertTrue(
-                registerPage.isErrorMessageAboveForm(),
-                "Error message is not above the registration form"
+        Log.verify(
+                softAssert,
+                "Registration error message position",
+                true,
+                registerPage.isErrorMessageAboveForm()
         );
 
         softAssert.assertAll();
@@ -87,29 +87,32 @@ public class RegisterTest extends BaseTest {
                 InvalidData.EMPTY.getValue()
         );
 
-        Log.info("Verify registration error messages");
-
-        softAssert.assertTrue(
-                registerPage.isErrorMessageAboveForm(),
-                "Error message is not above the registration form"
+        Log.verify(
+                softAssert,
+                "Registration error message position",
+                true,
+                registerPage.isErrorMessageAboveForm()
         );
 
-        softAssert.assertEquals(
-                registerPage.getRegisterErrorMessage(),
+        Log.verify(
+                softAssert,
+                "Registration form error message",
                 Message.REGISTER_FORM_ERROR.getText(),
-                "Registration error message is incorrect"
+                registerPage.getRegisterErrorMessage()
         );
 
-        softAssert.assertEquals(
-                registerPage.getRegisterErrorPasswordMessage(),
+        Log.verify(
+                softAssert,
+                "Invalid password length error message",
                 Message.INVALID_PASSWORD_LENGTH.getText(),
-                "Password error message is incorrect"
+                registerPage.getRegisterErrorPasswordMessage()
         );
 
-        softAssert.assertEquals(
-                registerPage.getRegisterErrorPIDMessage(),
+        Log.verify(
+                softAssert,
+                "Invalid PID length error message",
                 Message.INVALID_PID_LENGTH.getText(),
-                "PID error message is incorrect"
+                registerPage.getRegisterErrorPIDMessage()
         );
 
         softAssert.assertAll();
@@ -130,21 +133,21 @@ public class RegisterTest extends BaseTest {
         Log.step("1. Navigate to QA Railway Website");
         basePage.navigatetoRailway();
 
-        Log.info("Verify that the Home page displays the create account link");
-
-        softAssert.assertTrue(
-                homePage.isCreateAccountLinkDisplayed(),
-                "Create account link is not displayed as expected"
+        Log.verify(
+                softAssert,
+                "Create account link displayed",
+                true,
+                homePage.isCreateAccountLinkDisplayed()
         );
 
         Log.step("2. Click on Create an account");
         homePage.clickCreateAccountLink();
 
-        Log.info("Verify that the Register page is displayed");
-
-        softAssert.assertTrue(
-                registerPage.isregisterPageTitleDisplayed(),
-                "Register page is not displayed as expected"
+        Log.verify(
+                softAssert,
+                "Register page displayed",
+                true,
+                registerPage.isregisterPageTitleDisplayed()
         );
 
         Log.step("3. Enter valid information into all fields");
@@ -157,11 +160,11 @@ public class RegisterTest extends BaseTest {
                 Account.VALID.getPid()
         );
 
-        Log.info("Verify registration success title");
-
-        softAssert.assertEquals(
-                registerPage.getRegisterSuccessTitle(),
-                Message.REGISTER_SUCCESS_TITLE.getText()
+        Log.verify(
+                softAssert,
+                "Registration success title",
+                Message.REGISTER_SUCCESS_TITLE.getText(),
+                registerPage.getRegisterSuccessTitle()
         );
 
         Log.step("5. Navigate to the mailbox");
@@ -175,12 +178,11 @@ public class RegisterTest extends BaseTest {
         Log.step("8. Click on the activation link");
         emailPage.clickLinkConfirmMail();
 
-        Log.info("Verify registration confirmation message");
-
-        softAssert.assertEquals(
-                registerPage.getmessageConfirmRegister(),
+        Log.verify(
+                softAssert,
+                "Registration confirmation message",
                 Message.REGISTER_CONFIRMED.getText(),
-                "Registration confirmation message is incorrect"
+                registerPage.getmessageConfirmRegister()
         );
 
         softAssert.assertAll();

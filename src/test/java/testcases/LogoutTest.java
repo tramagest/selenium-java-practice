@@ -34,14 +34,18 @@ public class LogoutTest extends BaseTest {
 
         Log.info("Verify Home page is displayed and Log out tab is absent");
 
-        softAssert.assertTrue(
-                homePage.isHomePageTitleDisplayed(),
-                "Home page is not displayed after logging out"
+        Log.verify(
+                softAssert,
+                "Home page displayed after logout",
+                true,
+                homePage.isHomePageTitleDisplayed()
         );
 
-        softAssert.assertTrue(
-                basePage.isLoggedOut(),
-                "Logout tab is still displayed after logging out"
+        Log.verify(
+                softAssert,
+                "Logged-out state",
+                true,
+                basePage.isLoggedOut()
         );
 
         softAssert.assertAll();
