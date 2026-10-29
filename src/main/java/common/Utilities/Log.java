@@ -17,7 +17,6 @@ public class Log {
         return current.get();
     }
 
-    // Ghi một step vào report
     public static void step(String message) {
         if (current.get() != null) {
             current.get().info(message);
@@ -43,8 +42,6 @@ public class Log {
             current.get().info(message);
         }
     }
-
-
 
     public static void verify(SoftAssert soft, String what, Object expected, Object actual) {
         verify(what, expected, actual);

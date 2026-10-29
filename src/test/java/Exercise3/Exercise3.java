@@ -48,8 +48,6 @@ public class Exercise3 extends BaseTest {
         String DepartDate = bookTicketPage.getSelectedDepartdate();
         String SeatType = bookTicketPage.getSelectedSeatType();
 
-
-
         bookTicketPage.bookTicket(ticket);
 
         VerifyResult r = bookTicketPage.verifyBookedTicket(DepartStation, ticket.getArriveStationName(), SeatType, DepartDate, ticket.getAmount());

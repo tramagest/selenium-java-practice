@@ -26,7 +26,6 @@ public class FirstSeleniumTest extends BaseTest {
         };
     }
 
-
     @Override
     @BeforeMethod
     public void setUp() {

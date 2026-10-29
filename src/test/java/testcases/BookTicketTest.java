@@ -222,8 +222,6 @@ public class BookTicketTest extends BaseTest {
                 ticket.getArriveStation()
         );
 
-
-
         Log.verify(
                 softAssert,
                 "Departure station on booking form",

@@ -126,15 +126,10 @@ public class BookTicketPage extends BasePage {
         click(btnBookTicket);
     }
 
-
-
-
     public VerifyResult verifyBookedTicket( String departStation,
                                            String arriveStation, String seatType,String departDate, Integer amount) {
         String expected = "";
         String actual = "";
-
-
 
         if (departStation != null) {
             expected += "Depart station: " + departStation + " | ";

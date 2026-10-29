@@ -14,7 +14,6 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -148,9 +147,6 @@ public class TestListener implements ITestListener {
                 .replace("\n", "<br>");
     }
 
-
-
-
     private String takeScreenshotBase64(WebDriver driver) {
         if (driver == null) {
             return null;
@@ -182,8 +178,6 @@ public class TestListener implements ITestListener {
             return null;
         }
     }
-
-
 
     private void saveScreenshot(String base64, String testName) {
         try {

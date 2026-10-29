@@ -27,9 +27,6 @@ public class BasePage {
     private final String LOG_OUT = "Log out";
     private final String REGISTER = "Register";
 
-
-    
-
     private static final String TAB_XPATH = "//*[@id='menu']//li[a[span[text()='%s']]]/a";
 
     private final By lblWelcome = By.xpath("//*[@id='banner']/div/strong");

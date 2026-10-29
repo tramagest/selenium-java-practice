@@ -7,7 +7,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-
 public class ForgotPasswordPage extends BasePage {
 
     public ForgotPasswordPage(WebDriver driver) {
@@ -25,7 +24,6 @@ public class ForgotPasswordPage extends BasePage {
     private final By btnResetPassword = By.xpath("//input[@type='submit' and @value='Reset Password']");
 
     private final By ttlFormResetPassword = By.xpath("//legend");
-
 
     private final By messageResetPasswordError = By.xpath("//div[@id='content']//p[@class='message error']");
 
@@ -69,7 +67,6 @@ public class ForgotPasswordPage extends BasePage {
             return "";
         }
     }
-
 
     public boolean verifyMessageResetPasswordError(String message) {
         return getMessageResetPasswordError().equals(message);

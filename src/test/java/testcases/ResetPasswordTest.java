@@ -80,8 +80,6 @@ public class ResetPasswordTest extends BaseTest {
                 ValidData.PASSWORD.getValue()
         );
 
-
-
         Log.verify(
                 softAssert,
                 "Error message when reusing the current password",
@@ -120,8 +118,6 @@ public class ResetPasswordTest extends BaseTest {
         Log.step("7. Click on the reset link");
         emailPage.clickLinkResetPassword();
 
-
-
         Log.verify(
                 softAssert,
                 "Password Change Form title",
@@ -144,16 +140,12 @@ public class ResetPasswordTest extends BaseTest {
                 InvalidData.INVALID_PASSWORD.getValue()
         );
 
-
-
         Log.verify(
                 softAssert,
                 "Password reset error message",
                 Message.RESET_FAILED.getText(),
                 forgotPasswordPage.getMessageResetPasswordError()
         );
-
-
 
         Log.verify(
                 softAssert,
