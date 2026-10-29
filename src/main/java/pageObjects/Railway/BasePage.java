@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 import org.openqa.selenium.WindowType;
 import dataObjects.Message;
@@ -110,16 +111,15 @@ public class BasePage {
 
 
     public String getWelcomeMessage() {
-        return find(lblWelcome).getText();
+        return find(lblWelcome).getText().trim();
     }
 
     public boolean isWelcomeUserMessageDisplayed(String email) {
-        if (driver.findElements(lblWelcome).isEmpty()) {
+        List<WebElement> els = driver.findElements(lblWelcome);
+        if (els.isEmpty() || !els.get(0).isDisplayed()) {
             return false;
         }
-        return find(lblWelcome).getText().trim().equals(Message.WELCOME_USER.format(email));
-
-
+        return getWelcomeMessage().equals(Message.WELCOME_USER.format(email).trim());
     }
 
     public boolean verifyWelcomeMessage(String expectedMessage) {

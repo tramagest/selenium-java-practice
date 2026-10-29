@@ -129,15 +129,12 @@ public class BookTicketPage extends BasePage {
 
 
 
-    public VerifyResult verifyBookedTicket(String departDate, String departStation,
-                                           String arriveStation, String seatType, Integer amount) {
+    public VerifyResult verifyBookedTicket( String departStation,
+                                           String arriveStation, String seatType,String departDate, Integer amount) {
         String expected = "";
         String actual = "";
 
-        if (departDate != null) {
-            expected += "Depart date: " + departDate + " | ";
-            actual += "Depart date: " + getDepartDate() + " | ";
-        }
+
 
         if (departStation != null) {
             expected += "Depart station: " + departStation + " | ";
@@ -152,6 +149,11 @@ public class BookTicketPage extends BasePage {
         if (seatType != null) {
             expected += "Seat type: " + seatType + " | ";
             actual += "Seat type: " + getSeatType() + " | ";
+        }
+
+        if (departDate != null) {
+            expected += "Depart date: " + departDate + " | ";
+            actual += "Depart date: " + getDepartDate() + " | ";
         }
 
         if (amount != null) {

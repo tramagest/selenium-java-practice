@@ -38,6 +38,8 @@ public class LoginTest extends BaseTest {
 
         Log.step("3. Enter valid Email and Password");
         Log.step("4. Click on Login button");
+
+
         loginPage.login(ValidData.EMAIL.getValue(), ValidData.PASSWORD.getValue());
 
         Log.verify(
