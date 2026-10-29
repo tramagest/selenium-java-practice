@@ -1,11 +1,12 @@
 package Exercise2;
 
+import common.Utilities.Log;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import common.Constant.Constant;
-import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,12 +35,18 @@ public class FirstSeleniumTest extends BaseTest {
     @Test(dataProvider = "browsers")
     public void verifyTitle(String tcName, String browserName) {
 
+        SoftAssert softAssert = new SoftAssert();
+
+        Log.step("1. Create Driver");
         driver = createDriver(browserName);
 
         driver.manage().window().maximize();
+
+        Log.step("2. Go to Document");
         driver.get(Constant.DOCUMENT_URL);
 
-        Assert.assertEquals(driver.getTitle(), EXPECTED_TITLE, "Wrong title on " + browserName);
+        Log.verify(softAssert,"Title name",EXPECTED_TITLE,driver.getTitle());
+
     }
 
     private WebDriver createDriver(String browserName) {
