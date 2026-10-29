@@ -148,28 +148,42 @@ public class TestListener implements ITestListener {
                 .replace("\n", "<br>");
     }
 
+
+
+
     private String takeScreenshotBase64(WebDriver driver) {
         if (driver == null) {
             return null;
         }
 
         try {
-            try {
-                ((JavascriptExecutor) driver).executeScript(
-                        "window.scrollTo(0, Math.max("
-                                + "document.body.scrollHeight, "
-                                + "document.documentElement.scrollHeight));"
-                );
-            } catch (Exception ignored) {
-            }
+            JavascriptExecutor js = (JavascriptExecutor) driver;
 
-            return ((TakesScreenshot) driver)
-                    .getScreenshotAs(OutputType.BASE64);
+            Object originalZoom = js.executeScript(
+                    "return document.documentElement.style.zoom || '100%';"
+            );
+
+            try {
+                js.executeScript(
+                        "document.documentElement.style.zoom = '65%';"
+                );
+
+                return ((TakesScreenshot) driver)
+                        .getScreenshotAs(OutputType.BASE64);
+
+            } finally {
+                js.executeScript(
+                        "document.documentElement.style.zoom = arguments[0];",
+                        originalZoom
+                );
+            }
 
         } catch (Exception e) {
             return null;
         }
     }
+
+
 
     private void saveScreenshot(String base64, String testName) {
         try {
