@@ -1,22 +1,20 @@
-
 package common.Utilities;
 
 import org.openqa.selenium.WebDriver;
 
 public class DriverManager {
 
-    private static final ThreadLocal<WebDriver> driverThread =
-            new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> DRIVER = new ThreadLocal<>();
 
     public static void setDriver(WebDriver driver) {
-        driverThread.set(driver);
+        DRIVER.set(driver);
     }
 
     public static WebDriver getDriver() {
-        return driverThread.get();
+        return DRIVER.get();
     }
 
     public static void unload() {
-        driverThread.remove();
+        DRIVER.remove();
     }
 }

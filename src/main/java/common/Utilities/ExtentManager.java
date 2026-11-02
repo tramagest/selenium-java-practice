@@ -48,7 +48,6 @@ public class ExtentManager {
         ExtentReports reports = new ExtentReports();
         reports.attachReporter(spark);
         reports.setSystemInfo("Application", "Safe Railway");
-        reports.setSystemInfo("Browser", "Chrome");
         reports.setSystemInfo("OS", System.getProperty("os.name"));
         reports.setSystemInfo("Java", System.getProperty("java.version"));
         reports.setSystemInfo("Tester", System.getProperty("user.name"));
