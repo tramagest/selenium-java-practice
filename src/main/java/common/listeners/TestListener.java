@@ -31,11 +31,9 @@ public class TestListener implements ITestListener, ISuiteListener, IAlterSuiteL
 
     private static final ExtentReports extent = ExtentManager.getInstance();
 
-    // Browsers that actually ran in this suite (filled from the "browser" parameter in testng.xml)
     private static final Set<String> BROWSERS = ConcurrentHashMap.newKeySet();
 
-    // Run only the browser given by -Dbrowser=Edge (or Chrome).
-    // No -Dbrowser means every <test> in testng.xml runs as usual.
+
     @Override
     public void alter(List<XmlSuite> suites) {
         String only = System.getProperty("browser");
