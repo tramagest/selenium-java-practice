@@ -10,26 +10,46 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.testng.IAlterSuiteListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.xml.XmlSuite;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TestListener implements ITestListener, ISuiteListener {
+public class TestListener implements ITestListener, ISuiteListener, IAlterSuiteListener {
 
     private static final ExtentReports extent = ExtentManager.getInstance();
 
     // Browsers that actually ran in this suite (filled from the "browser" parameter in testng.xml)
     private static final Set<String> BROWSERS = ConcurrentHashMap.newKeySet();
+
+    // Run only the browser given by -Dbrowser=Edge (or Chrome).
+    // No -Dbrowser means every <test> in testng.xml runs as usual.
+    @Override
+    public void alter(List<XmlSuite> suites) {
+        String only = System.getProperty("browser");
+
+        if (only == null || only.isBlank()) {
+            return;
+        }
+
+        for (XmlSuite suite : suites) {
+            suite.getTests().removeIf(
+                    t -> !only.equalsIgnoreCase(t.getParameter("browser"))
+            );
+        }
+    }
 
     @Override
     public void onStart(ITestContext context) {
@@ -80,7 +100,6 @@ public class TestListener implements ITestListener, ISuiteListener {
                             .build()
             );
 
-
             saveScreenshot(screenshot,
                     getTestName(result) + "_" + getBrowser(result.getTestContext()));
         } else {
@@ -102,7 +121,6 @@ public class TestListener implements ITestListener, ISuiteListener {
             Log.get().skip("Test skipped");
         }
     }
-
 
     @Override
     public void onFinish(ISuite suite) {
