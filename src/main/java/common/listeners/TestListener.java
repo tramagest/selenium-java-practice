@@ -1,4 +1,3 @@
-
 package common.listeners;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -11,27 +10,61 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.testng.IAlterSuiteListener;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.xml.XmlSuite;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class TestListener implements ITestListener {
+public class TestListener implements ITestListener, ISuiteListener, IAlterSuiteListener {
 
     private static final ExtentReports extent = ExtentManager.getInstance();
 
+    private static final Set<String> BROWSERS = ConcurrentHashMap.newKeySet();
+
+
+    @Override
+    public void alter(List<XmlSuite> suites) {
+        String only = System.getProperty("browser");
+
+        if (only == null || only.isBlank()) {
+            return;
+        }
+
+        for (XmlSuite suite : suites) {
+            suite.getTests().removeIf(
+                    t -> !only.equalsIgnoreCase(t.getParameter("browser"))
+            );
+        }
+    }
+
+    @Override
+    public void onStart(ITestContext context) {
+        BROWSERS.add(getBrowser(context));
+    }
+
     @Override
     public void onTestStart(ITestResult result) {
+        String browser = getBrowser(result.getTestContext());
+
         ExtentTest test = extent.createTest(
-                getTestName(result),
+                getTestName(result) + " [" + browser + "]",
                 result.getMethod().getDescription()
         );
 
         test.assignCategory(result.getTestClass().getRealClass().getSimpleName());
+        test.assignDevice(browser);
         Log.set(test);
     }
 
@@ -65,7 +98,8 @@ public class TestListener implements ITestListener {
                             .build()
             );
 
-            saveScreenshot(screenshot, getTestName(result));
+            saveScreenshot(screenshot,
+                    getTestName(result) + "_" + getBrowser(result.getTestContext()));
         } else {
             if (error != null) {
                 Log.get().fail(error);
@@ -87,8 +121,15 @@ public class TestListener implements ITestListener {
     }
 
     @Override
-    public void onFinish(ITestContext context) {
+    public void onFinish(ISuite suite) {
+        extent.setSystemInfo("Browser", String.join(", ", new TreeSet<>(BROWSERS)));
         extent.flush();
+    }
+
+    private String getBrowser(ITestContext context) {
+        String browser = context.getCurrentXmlTest().getParameter("browser");
+
+        return browser == null ? "Chrome" : browser;
     }
 
     private String getTestName(ITestResult result) {

@@ -13,7 +13,7 @@ public class ExtentManager {
     private static final String REPORT_DIR = System.getProperty("user.dir") + File.separator
             + "test-output" + File.separator + "ExtentReport";
 
-    // Folder contains screenshot when test fail: test-output/ExtentReport/Screenshots
+
     public static final String SCREENSHOT_DIR = REPORT_DIR + File.separator + "Screenshots";
 
     private static ExtentReports extent;
@@ -48,7 +48,6 @@ public class ExtentManager {
         ExtentReports reports = new ExtentReports();
         reports.attachReporter(spark);
         reports.setSystemInfo("Application", "Safe Railway");
-        reports.setSystemInfo("Browser", "Chrome");
         reports.setSystemInfo("OS", System.getProperty("os.name"));
         reports.setSystemInfo("Java", System.getProperty("java.version"));
         reports.setSystemInfo("Tester", System.getProperty("user.name"));
